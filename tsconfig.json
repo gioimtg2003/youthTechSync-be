@@ -16,6 +16,29 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@common/*": [
+        "./src/common/*"
+      ],
+      "@features/*": [
+        "./src/features/*"
+      ],
+      "@decorators": [
+        "./src/decorators"
+      ],
+      "@interfaces": [
+        "./src/interfaces"
+      ],
+      "@constants": [
+        "./src/constants"
+      ],
+      "@utils": [
+        "./src/utils"
+      ],
+      "@libs/*": [
+        "./src/libs/*"
+      ]
+    },
   }
 }
