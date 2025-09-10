@@ -4,6 +4,6 @@ export enum REDIS_MODULE_CONNECTION {
 }
 
 export const CACHE_KEY_SYSTEM = {
-  RESOURCE: 'resource',
+  RESOURCE_POSTS: 'resource:posts',
   USER: 'user',
 };

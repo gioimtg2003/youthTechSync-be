@@ -1,6 +1,7 @@
 import { BaseEntity } from '@common/entities/base.entity';
 import { DATABASE_TABLES, PostStatus } from '@constants';
 import { PostAudit } from '@features/post-audits/entities/post-audit.entity';
+import { Team } from '@features/teams/entities/team.entity';
 import { Column, Entity, Index, ManyToOne, OneToMany, Relation } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 
@@ -34,4 +35,7 @@ export class Post extends BaseEntity {
 
   @OneToMany(() => PostAudit, (postAudit) => postAudit.post)
   audits: Relation<PostAudit>[];
+
+  @ManyToOne(() => Team, (team) => team.posts, { nullable: false })
+  team: Relation<Team>;
 }
