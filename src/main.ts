@@ -6,7 +6,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import RedisStore from 'connect-redis';
 import session from 'express-session';
 import Redis from 'ioredis';
-import { version } from '../package.json';
 import { AppModule } from './app.module';
 import { buildConfig } from './config';
 import { genId } from './gen-id';
@@ -53,8 +52,7 @@ async function bootstrap() {
     const config = new DocumentBuilder()
       .setTitle('Youth TechSync API')
       .setDescription('The Youth TechSync API description')
-      .setVersion(version)
-      .setBasePath('api')
+      .setVersion(`v${CURRENT_VERSION_API}`)
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
@@ -63,9 +61,11 @@ async function bootstrap() {
   }
 
   app.useGlobalPipes(new ValidationPipe());
+
   app.enableVersioning({
     type: VersioningType.URI,
   });
+
   app.enableCors({
     origin: appConfig.origin,
     credentials: true,
