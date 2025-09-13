@@ -15,7 +15,7 @@ export class Resource extends BaseEntity {
   @Column({ type: 'varchar', length: 255, unique: true })
   slug: string;
 
-  @Column({ type: 'enum', enum: ResourceType, default: ResourceType.blog })
+  @Column({ type: 'enum', enum: ResourceType, default: ResourceType.BLOG })
   type: ResourceType;
 
   @Column({ type: 'jsonb', nullable: true })

@@ -34,6 +34,7 @@ module.exports = {
       {
         "endOfLine": "auto"
       }
-    ]
+    ],
+    "@typescript-eslint/no-empty-object-type": "off"
   },
 };

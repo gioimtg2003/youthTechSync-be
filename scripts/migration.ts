@@ -1,6 +1,6 @@
 import { registerAs } from '@nestjs/config';
-import { loadEnv } from 'src/doppler';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { loadEnv } from '../src/doppler';
 
 loadEnv();
 console.log('Start migration process');

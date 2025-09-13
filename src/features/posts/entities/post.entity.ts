@@ -26,7 +26,7 @@ export class Post extends BaseEntity {
   @Column({
     type: 'enum',
     enum: PostStatus,
-    default: PostStatus.draft,
+    default: PostStatus.DRAFT,
   })
   status: PostStatus;
 

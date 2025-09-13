@@ -1,4 +1,6 @@
+import { SESSION_MAX_AGE } from '@constants';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { CookieOptions } from 'express';
 import { loadEnv } from 'src/doppler';
 
 loadEnv();
@@ -14,6 +16,7 @@ export enum Environment {
  */
 interface IConfig {
   origin: CorsOptions['origin'];
+  cookie: CookieOptions;
   environment: Environment;
   enableSwagger: boolean;
 }
@@ -23,7 +26,7 @@ type IConfigs = {
 };
 
 export const Origins = {
-  domain: 'app-shippee.nguyenconggioi.me',
+  domain: '*.nguyenconggioi.me',
 };
 
 /**
@@ -31,18 +34,39 @@ export const Origins = {
  */
 const configs: IConfigs = {
   [Environment.development]: {
-    origin: /.*/,
+    origin: [Origins.domain],
+    cookie: {
+      httpOnly: true,
+      secure: true,
+      maxAge: SESSION_MAX_AGE,
+      sameSite: 'lax',
+      domain: '.nguyenconggioi.me',
+    },
     environment: Environment.development,
     enableSwagger: false,
   },
 
   [Environment.production]: {
     origin: [Origins.domain],
+    cookie: {
+      httpOnly: true,
+      secure: true,
+      maxAge: SESSION_MAX_AGE,
+      sameSite: 'lax',
+      domain: '.nguyenconggioi.me',
+    },
     environment: Environment.production,
     enableSwagger: false,
   },
 
   [Environment.localhost]: {
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      maxAge: SESSION_MAX_AGE,
+      sameSite: 'lax',
+      domain: '.localhost:3000',
+    },
     origin: /.*/,
     environment: Environment.localhost,
     enableSwagger: true,

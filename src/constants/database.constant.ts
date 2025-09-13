@@ -12,17 +12,23 @@ export const DATABASE_TABLES = {
   POST_AUDITS: 'post_audits',
 };
 
+export enum UserPlan {
+  FREE = 1,
+  PREMIUM = 2,
+  UNLIMITED = 3,
+}
+
 export enum PostStatus {
-  draft = 'draft',
-  published = 'published',
-  archived = 'archived',
+  DRAFT = 1,
+  PUBLISHED = 2,
+  ARCHIVED = 3,
 }
 
 export enum ResourceType {
-  blog = 'blog',
-  event = 'event',
-  document = 'document',
-  other = 'other',
+  BLOG = 1,
+  EVENT = 2,
+  DOCUMENT = 3,
+  OTHER = 4,
 }
 
 export enum PostAuditAction {

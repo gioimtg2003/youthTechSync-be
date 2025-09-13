@@ -1,5 +1,5 @@
 import { BaseEntity } from '@common/entities/base.entity';
-import { DATABASE_TABLES } from '@constants';
+import { DATABASE_TABLES, UserPlan } from '@constants';
 import { Role } from '@features/roles/entities/role.entity';
 import { Team } from '@features/teams/entities/team.entity';
 import {
@@ -23,7 +23,10 @@ export class User extends BaseEntity {
   password: string;
 
   @Column({ type: 'jsonb', nullable: true })
-  profile: Record<string, any>;
+  profile?: Record<string, any>;
+
+  @Column({ type: 'enum', enum: UserPlan, default: UserPlan.FREE })
+  plan: UserPlan;
 
   @ManyToMany(() => Team, (team) => team.users)
   @JoinTable({ name: DATABASE_TABLES.TEAM_USERS })
@@ -32,4 +35,7 @@ export class User extends BaseEntity {
   @OneToMany(() => Role, (role) => role.users)
   @JoinTable({ name: DATABASE_TABLES.USER_ROLES })
   roles: Relation<Role>[];
+
+  @OneToMany(() => Team, (team) => team.createdBy)
+  teamsCreated: Relation<Team>[];
 }

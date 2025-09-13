@@ -3,15 +3,26 @@ import { DATABASE_TABLES } from '@constants';
 import { Post } from '@features/posts/entities/post.entity';
 import { Resource } from '@features/resources/entities/resource.entity';
 import { User } from '@features/users/entities/user.entity';
-import { Column, Entity, ManyToMany, OneToMany, Relation } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToMany,
+  OneToMany,
+  Relation,
+} from 'typeorm';
 
 @Entity(DATABASE_TABLES.TEAMS)
 export class Team extends BaseEntity {
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
+  @Index({ unique: true })
+  @Column({ type: 'varchar', length: 255, nullable: true, unique: true })
+  alias?: string;
+
   @Column({ type: 'text', nullable: true })
-  description: string;
+  description?: string;
 
   @ManyToMany(() => User, (user) => user.teams)
   users: Relation<User>[];
@@ -27,4 +38,7 @@ export class Team extends BaseEntity {
 
   @OneToMany(() => Post, (post) => post.team)
   posts: Relation<Post>[];
+
+  @ManyToMany(() => User, (user) => user.teamsCreated)
+  createdBy: Relation<User>;
 }
