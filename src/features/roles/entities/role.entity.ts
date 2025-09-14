@@ -11,6 +11,9 @@ export class Role extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
+  @Column({ type: 'boolean', default: false })
+  isAdmin: boolean;
+
   @Column({ type: 'text', array: true, default: [] })
   permission: Policy[];
 

@@ -3,9 +3,10 @@ import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import RedisStore from 'connect-redis';
+import { RedisStore } from 'connect-redis';
 import session from 'express-session';
-import Redis from 'ioredis';
+import passport from 'passport';
+import { createClient } from 'redis';
 import { AppModule } from './app.module';
 import { buildConfig } from './config';
 import { genId } from './gen-id';
@@ -22,31 +23,47 @@ async function bootstrap() {
     `🔥 Application listening on http://localhost:${PORT}/api/v${CURRENT_VERSION_API}`,
   );
   if (appConfig.enableSwagger)
-    logger.debug(`🔥 Swagger running on http://localhost:${PORT}/api/doc`);
+    logger.debug(
+      `🔥 Swagger running on http://localhost:${PORT}/api/v${CURRENT_VERSION_API}/docs`,
+    );
 
   app.setGlobalPrefix('api');
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
   // app.useGlobalInterceptors(new TransformationInterceptor());
-  const redisClient = new Redis(process.env.REDIS_URI);
-
-  redisClient.on('connect', () => {
-    logger.debug('Redis client connected');
+  const redisClient = createClient({
+    url: process.env.REDIS_URI,
   });
+  await redisClient.connect();
 
-  const redisStore = new (RedisStore(session))({
+  const store = new RedisStore({
     client: redisClient,
+    prefix: 'sess:',
+    ttl: appConfig.cookie.maxAge / 1000,
   });
+  console.log('🚀 ~ bootstrap ~ appConfig.cookie:', appConfig.cookie);
+
   app.use(
     session({
-      store: redisStore,
+      store,
       secret: process.env.SESSION_SECRET,
       resave: false,
-      saveUninitialized: false,
+      saveUninitialized: false, //  only save session when data exists
       cookie: { ...appConfig.cookie },
       genid: genId,
     }),
   );
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   app.set('trust proxy', 1);
+  app.useGlobalPipes(new ValidationPipe());
+
+  app.enableCors({
+    origin: appConfig.origin,
+    credentials: true,
+  });
 
   if (appConfig.enableSwagger) {
     const config = new DocumentBuilder()
@@ -55,21 +72,10 @@ async function bootstrap() {
       .setVersion(`v${CURRENT_VERSION_API}`)
       .build();
 
-    const document = SwaggerModule.createDocument(app, config);
+    const document = SwaggerModule.createDocument(app, config, {});
 
-    SwaggerModule.setup('/api/docs', app, document);
+    SwaggerModule.setup(`/api/v${CURRENT_VERSION_API}/docs`, app, document);
   }
-
-  app.useGlobalPipes(new ValidationPipe());
-
-  app.enableVersioning({
-    type: VersioningType.URI,
-  });
-
-  app.enableCors({
-    origin: appConfig.origin,
-    credentials: true,
-  });
 
   await app.listen(PORT);
 }

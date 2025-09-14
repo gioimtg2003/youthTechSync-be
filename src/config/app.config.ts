@@ -65,7 +65,7 @@ const configs: IConfigs = {
       secure: false,
       maxAge: SESSION_MAX_AGE,
       sameSite: 'lax',
-      domain: '.localhost:3000',
+      domain: '.localhost',
     },
     origin: /.*/,
     environment: Environment.localhost,

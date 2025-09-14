@@ -5,6 +5,7 @@ import { Team } from '@features/teams/entities/team.entity';
 import {
   Column,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   OneToMany,
@@ -13,10 +14,12 @@ import {
 
 @Entity(DATABASE_TABLES.USERS)
 export class User extends BaseEntity {
-  @Column({ type: 'varchar', length: 100 })
+  @Index({ unique: true })
+  @Column({ type: 'varchar', length: 100, unique: true })
   username: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Index({ unique: true })
+  @Column({ type: 'varchar', length: 100, unique: true })
   email: string;
 
   @Column({ type: 'varchar', length: 255 })
@@ -32,7 +35,7 @@ export class User extends BaseEntity {
   @JoinTable({ name: DATABASE_TABLES.TEAM_USERS })
   teams: Relation<Team>[];
 
-  @OneToMany(() => Role, (role) => role.users)
+  @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({ name: DATABASE_TABLES.USER_ROLES })
   roles: Relation<Role>[];
 

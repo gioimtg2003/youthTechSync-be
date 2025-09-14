@@ -7,10 +7,11 @@ export interface IUserSession {
   id: number;
   plan: UserPlan;
   username: string;
-  profile?: Record<string, any>;
-  permission?: string[];
-}
+  email: string;
 
-export interface IUserJWT {
-  id: number;
+  isAdmin?: boolean;
+  roles?: string[];
+  permission?: string[];
+
+  profile?: Record<string, any>;
 }

@@ -2,6 +2,7 @@
 export enum UserError {
   USER_NOT_FOUND = 100,
   USER_REACHES_CREATE_TEAM_LIMIT = 101,
+  USER_CANNOT_CREATE = 102,
 }
 
 /** *****************End***************** */
@@ -23,5 +24,8 @@ export enum TeamError {
 /** *****************End***************** */
 
 /** *****************Auth***************** */
-
+export enum AuthError {
+  AUTH_INVALID_CREDENTIALS = 300,
+  AUTH_INVALID_SESSION = 301,
+}
 /** *****************End***************** */

@@ -13,16 +13,17 @@ import {
 import { User } from '@features/users/entities/user.entity';
 
 import { Injectable } from '@nestjs/common';
+import { IUserSession } from 'src/interfaces';
 
 export type Subjects = InferSubjects<typeof User> | ResourcePermission;
 export type AppAbility = PureAbility<[ActionPermission, Subjects]>;
 
 @Injectable()
 export class AbilityFactory {
-  definePoliciesForUser(user: User) {
+  definePoliciesForUser(user: IUserSession) {
     const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
-    if (user.roles?.find((ur) => ur.id === 1)) {
+    if (user?.username === process.env.ROOT_USER_NAME) {
       can(ActionPermission.manage, SYSTEM_RESOURCE.all);
     } else {
       //reject or grant permissions based on user's policies
