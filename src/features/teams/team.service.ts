@@ -1,4 +1,4 @@
-import { LIMIT_PLAN_CREATE_TEAM } from '@constants';
+import { LIMIT_PLAN_CREATE_TEAM, UserError } from '@constants';
 import { User } from '@features/users/entities/user.entity';
 import {
   ForbiddenException,
@@ -7,7 +7,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserError } from 'src/constants/error.constant';
 import { DataSource, Repository } from 'typeorm';
 import { CreateTeamDto } from './dto';
 import { Team } from './entities/team.entity';

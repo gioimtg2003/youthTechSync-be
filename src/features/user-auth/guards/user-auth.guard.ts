@@ -1,11 +1,11 @@
+import { AuthError } from '@constants';
+import { IUserSession } from '@interfaces';
 import {
   CanActivate,
   ExecutionContext,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthError } from 'src/constants/error.constant';
-import { IUserSession } from 'src/interfaces';
 
 @Injectable()
 export class UserAuthGuard implements CanActivate {

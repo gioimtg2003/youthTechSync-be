@@ -1,7 +1,7 @@
+import { UserError } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserError } from 'src/constants/error.constant';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 

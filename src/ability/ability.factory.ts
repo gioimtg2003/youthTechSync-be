@@ -11,9 +11,9 @@ import {
   SYSTEM_RESOURCE,
 } from '@constants';
 import { User } from '@features/users/entities/user.entity';
+import { IUserSession } from '@interfaces';
 
 import { Injectable } from '@nestjs/common';
-import { IUserSession } from 'src/interfaces';
 
 export type Subjects = InferSubjects<typeof User> | ResourcePermission;
 export type AppAbility = PureAbility<[ActionPermission, Subjects]>;
