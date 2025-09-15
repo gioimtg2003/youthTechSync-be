@@ -38,13 +38,13 @@ async function bootstrap() {
   redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
   await redisClient.connect();
+  console.log(' \u2714 Connected to Redis');
 
   const store = new RedisStore({
     client: redisClient,
     prefix: 'sess:',
     ttl: appConfig.cookie.maxAge / 1000,
   });
-  console.log('🚀 ~ bootstrap ~ appConfig.cookie:', appConfig.cookie);
 
   app.use(
     session({

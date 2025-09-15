@@ -1,3 +1,4 @@
+import { PolicyModule } from '@features/policy';
 import { PostAuditModule } from '@features/post-audits';
 import { PostModule } from '@features/posts';
 import { RedisModule } from '@features/redis';
@@ -42,6 +43,7 @@ import { Environment } from './config';
     TeamModule,
     UserModule,
     UserAuthModule,
+    PolicyModule,
   ],
   controllers: [AppController],
   providers: [
