@@ -16,7 +16,7 @@ export class TeamService {
   private readonly logger = new Logger(TeamService.name);
 
   constructor(
-    @InjectRepository(Team) private readonly _: Repository<Team>,
+    @InjectRepository(Team) private readonly teamRepository: Repository<Team>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -46,6 +46,7 @@ export class TeamService {
 
       const team = queryRunner.manager.create(Team, {
         ...input,
+        users: [{ id: userId }],
         createdBy: { id: userId },
       });
 
