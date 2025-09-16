@@ -43,13 +43,13 @@ export class UserService {
   }
 
   async create(userData: Partial<User>) {
-    const { password, email, username } = userData;
+    // prevent plan from being set during creation
+    const { password, ...restInput } = userData;
 
     const hashPassword = await this.cryptoService.hash(password);
 
     const user = this.userRepository.create({
-      email,
-      username,
+      ...restInput,
       password: hashPassword,
     });
     const saved = await this.userRepository.save(user);

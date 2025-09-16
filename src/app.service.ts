@@ -1,4 +1,3 @@
-import { UserPlan } from '@constants';
 import { UserService } from '@features/users';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 
@@ -16,7 +15,6 @@ export class AppService implements OnModuleInit {
         username: process.env.ROOT_USER_NAME,
         email: process.env.ROOT_USER_EMAIL,
         password: process.env.ROOT_USER_PASSWORD,
-        plan: UserPlan.UNLIMITED,
       });
     }
   }

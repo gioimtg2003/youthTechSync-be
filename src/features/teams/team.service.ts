@@ -52,7 +52,7 @@ export class TeamService {
       await queryRunner.manager.save(team);
 
       await queryRunner.commitTransaction();
-      return team;
+      return true;
     } catch (err) {
       await queryRunner.rollbackTransaction();
       this.logger.error(err);

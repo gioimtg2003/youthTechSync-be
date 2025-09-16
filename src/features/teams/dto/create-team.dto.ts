@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsOptional,
@@ -8,6 +9,7 @@ import {
 export class CreateTeamDto {
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({ example: 'My Team' })
   name: string;
 
   @Matches(/^[a-z0-9]([a-z0-9-]{1,61}[a-z0-9])?$/, {
@@ -16,5 +18,6 @@ export class CreateTeamDto {
   })
   @IsOptional()
   @Length(3, 63, { message: 'Alias must be between 3 and 63 characters long.' })
+  @ApiProperty({ example: 'my_team', required: false })
   alias?: string;
 }
