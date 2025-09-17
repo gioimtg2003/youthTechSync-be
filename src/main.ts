@@ -34,6 +34,7 @@ async function bootstrap() {
   // app.useGlobalInterceptors(new TransformationInterceptor());
   const redisClient = createClient({
     url: process.env.REDIS_URI,
+    pingInterval: 15000,
   });
   redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
