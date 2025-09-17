@@ -11,21 +11,61 @@ export class UserTeamService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
+  async findUserById(
+    id: number,
+    selectFields: (keyof User)[] = [],
+    relations: string[] = [],
+  ) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: selectFields?.length ? selectFields : undefined,
+      relations: relations?.length ? relations : undefined,
+    });
+
+    if (!user) {
+      throw new BadRequestException(UserError.USER_NOT_FOUND);
+    }
+
+    return user;
+  }
+
+  // TODO: logic check permission before leave team
+  // case 1: user is the last admin in the team
+  // case 2: user is not in the team
+  async deleteUserFromTeam(userId: number, teamId: number) {
+    this.logger.log(`Removing user ${userId} from team ${teamId}`);
+
+    const user = await this.findUserById(
+      userId,
+      ['id', 'teams'],
+      [DATABASE_TABLES.TEAMS],
+    );
+
+    const updatedTeams = (user.teams ?? []).filter(
+      (team) => team.id !== teamId,
+    );
+    const saved = await this.userRepository.save({
+      ...user,
+      teams: updatedTeams,
+    });
+
+    if (!saved) {
+      throw new BadRequestException(UserError.USER_CANNOT_LEAVE_TEAM);
+    }
+    return true;
+  }
+
   /**
    * Add user to team with max team join based on plan of user
    */
   async addUserToTeam(userId: number, teamId: number) {
     this.logger.log(`Adding user ${userId} to team ${teamId}`);
 
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      select: ['id', 'plan'],
-      relations: [DATABASE_TABLES.TEAMS],
-    });
-
-    if (!user) {
-      throw new BadRequestException(UserError.USER_NOT_FOUND);
-    }
+    const user = await this.findUserById(
+      userId,
+      ['id', 'plan', 'teams'],
+      [DATABASE_TABLES.TEAMS],
+    );
 
     const countTeams = user?.teams?.length ?? 0;
     const maxTeamJoin = LIMIT_PLAN_CREATE_TEAM[user.plan] ?? 0;

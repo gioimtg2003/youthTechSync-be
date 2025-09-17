@@ -5,6 +5,7 @@ import { IUserSession } from '@interfaces';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -12,7 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { AddUserToTeamDto } from './dto';
+import { AddUserToTeamDto, LeaveTeamDto, RemoveUserFromTeamDto } from './dto';
 import { UserTeamService } from './user-team.service';
 
 @ApiTags('User Team')
@@ -45,5 +46,30 @@ export class UserTeamController {
   })
   addToTeam(@Body() body: AddUserToTeamDto) {
     return this.userTeamService.addUserToTeam(body.userId, body.teamId);
+  }
+
+  @UseGuards(PermissionGuard)
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.delete, 'user-team');
+  })
+  @Delete('remove')
+  @HttpCode(HttpStatus.OK)
+  @ApiCreatedResponse({
+    description: 'User removed from team successfully',
+    type: Boolean,
+  })
+  deleteUserFromTeam(@Body() body: RemoveUserFromTeamDto) {
+    return this.userTeamService.deleteUserFromTeam(body.userId, body.teamId);
+  }
+
+  @UseGuards(PermissionGuard)
+  @Delete('leave')
+  @HttpCode(HttpStatus.OK)
+  @ApiCreatedResponse({
+    description: 'User left the team successfully',
+    type: Boolean,
+  })
+  leaveTeam(@Body() body: LeaveTeamDto, @CurrentUser() user: IUserSession) {
+    return this.userTeamService.deleteUserFromTeam(user.id, body.teamId);
   }
 }
