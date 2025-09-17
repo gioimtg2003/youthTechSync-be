@@ -3,6 +3,9 @@ export enum UserError {
   USER_NOT_FOUND = 100,
   USER_REACHES_CREATE_TEAM_LIMIT = 101,
   USER_CANNOT_CREATE = 102,
+  USER_REACHES_JOIN_TEAM_LIMIT = 103,
+  USER_CANNOT_JOIN_TEAM = 104,
+  USER_CANNOT_LEAVE_TEAM = 105,
 }
 
 /** *****************End***************** */

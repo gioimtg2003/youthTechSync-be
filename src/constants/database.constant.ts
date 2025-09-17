@@ -50,6 +50,7 @@ export enum SYSTEM_RESOURCE {
   all = 'all',
   post = 'post',
   user = 'user',
+  'user-team' = 'user-team',
   team = 'team',
   role = 'role',
   policy = 'policy',

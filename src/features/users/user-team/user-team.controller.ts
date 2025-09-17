@@ -3,31 +3,47 @@ import { ActionPermission, VERSIONING_API } from '@constants';
 import { CurrentUser, RequirePolicies } from '@decorators';
 import { IUserSession } from '@interfaces';
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { AddUserToTeamDto } from './dto';
 import { UserTeamService } from './user-team.service';
 
-@ApiTags('User Teams')
+@ApiTags('User Team')
 @Controller({ path: 'user-team', version: VERSIONING_API.v1 })
 export class UserTeamController {
   constructor(private readonly userTeamService: UserTeamService) {}
-
+  @UseGuards(PermissionGuard)
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.read, 'user-team');
+  })
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiCreatedResponse({
     description: 'User teams retrieved successfully',
     type: Boolean,
   })
-  @UseGuards(PermissionGuard)
-  @RequirePolicies((ability) => {
-    return ability.can(ActionPermission.read, 'team');
-  })
   getTeams(@CurrentUser() user: IUserSession) {
     return this.userTeamService.getMyTeams(user?.id);
+  }
+
+  @UseGuards(PermissionGuard)
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.create, 'user-team');
+  })
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({
+    description: 'User added to team successfully',
+    type: Boolean,
+  })
+  addToTeam(@Body() body: AddUserToTeamDto) {
+    return this.userTeamService.addUserToTeam(body.userId, body.teamId);
   }
 }
