@@ -7,6 +7,7 @@ import { RoleModule } from '@features/roles';
 import { TeamModule } from '@features/teams';
 import { UserAuthModule } from '@features/user-auth';
 import { UserModule } from '@features/users';
+import { UserTeamModule } from '@features/users/user-team';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
@@ -44,6 +45,7 @@ import { Environment } from './config';
     UserModule,
     UserAuthModule,
     PolicyModule,
+    UserTeamModule,
   ],
   controllers: [AppController],
   providers: [
