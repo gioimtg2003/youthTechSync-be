@@ -10,12 +10,20 @@ import {
   ResourcePermission,
   SYSTEM_RESOURCE,
 } from '@constants';
+import { Post } from '@features/posts/entities/post.entity';
+import { Resource } from '@features/resources/entities/resource.entity';
+import { Team } from '@features/teams/entities/team.entity';
 import { User } from '@features/users/entities/user.entity';
 import { IUserSession } from '@interfaces';
 
 import { Injectable } from '@nestjs/common';
 
-export type Subjects = InferSubjects<typeof User> | ResourcePermission;
+export type Subjects =
+  | InferSubjects<typeof User, true>
+  | InferSubjects<typeof Resource, true>
+  | InferSubjects<typeof Team, true>
+  | InferSubjects<typeof Post, true>
+  | ResourcePermission;
 export type AppAbility = PureAbility<[ActionPermission, Subjects]>;
 
 @Injectable()
@@ -26,11 +34,15 @@ export class AbilityFactory {
     if (user?.username === process.env.ROOT_USER_NAME) {
       can(ActionPermission.manage, SYSTEM_RESOURCE.all);
     } else {
-      //reject or grant permissions based on user's policies
-      // user.policies.forEach((policy) => {
-      //   const [action, dataSource, resource] = decodePolicy(policy);
-      //   can(action, `${dataSource}:${resource}`);
-      // });
+      user?.permissions?.forEach((permission) => {
+        const [action, resource] = permission.split(':') as [
+          ActionPermission,
+          SYSTEM_RESOURCE,
+        ];
+        can(action, resource, {
+          teamId: { $in: user.teams },
+        });
+      });
     }
 
     return build({

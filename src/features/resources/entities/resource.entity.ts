@@ -5,6 +5,8 @@ import { Column, Entity, Index, ManyToOne, OneToMany, Relation } from 'typeorm';
 
 @Entity(DATABASE_TABLES.RESOURCES)
 export class Resource extends BaseEntity {
+  static readonly modelName = 'Resource';
+
   @Column({ type: 'varchar', length: 255 })
   name: string;
 

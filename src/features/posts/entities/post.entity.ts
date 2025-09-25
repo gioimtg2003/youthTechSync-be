@@ -7,6 +7,8 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity(DATABASE_TABLES.POSTS)
 export class Post extends BaseEntity {
+  static readonly modelName = 'Post';
+
   @Column({ type: 'varchar', length: 255 })
   title: string;
 

@@ -14,6 +14,8 @@ import {
 
 @Entity(DATABASE_TABLES.TEAMS)
 export class Team extends BaseEntity {
+  static readonly modelName = 'Team';
+
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
