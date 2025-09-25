@@ -17,7 +17,7 @@ export class UserAuthService {
     const user = await this.userService.findByUsernameOrEmail(
       username,
       [],
-      ['roles'],
+      ['roles', 'teams'],
     );
     this.logger.log(`Validating user: ${username}`);
 
@@ -39,8 +39,9 @@ export class UserAuthService {
       email: user.email,
       plan: user.plan,
       roles: user.roles?.map((role) => role.name) || [],
+      teams: user.teams?.map((team) => team.alias) || [],
       isAdmin: user?.roles?.some((role) => role.isAdmin === true) || false,
-      permission: user?.roles?.flatMap((role) => role.permission) || [],
+      permissions: user?.roles?.flatMap((role) => role.permission) || [],
     };
 
     return userSession;

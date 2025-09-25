@@ -11,7 +11,8 @@ export interface IUserSession {
 
   isAdmin?: boolean;
   roles?: string[];
-  permission?: string[];
+  permissions?: string[];
 
+  teams: string[];
   profile?: Record<string, any>;
 }
