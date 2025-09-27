@@ -10,3 +10,5 @@ export const VERSIONING_API = {
   v1: '1',
   v2: '2',
 };
+
+export const DEFAULT_ID = -1;

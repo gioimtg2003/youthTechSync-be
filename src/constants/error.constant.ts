@@ -33,3 +33,9 @@ export enum AuthError {
   NOT_AUTHORIZED = 302,
 }
 /** *****************End***************** */
+
+/** *****************System Error***************** */
+export enum SystemError {
+  INTERNAL_SERVER_ERROR = 500,
+}
+/** *****************End***************** */

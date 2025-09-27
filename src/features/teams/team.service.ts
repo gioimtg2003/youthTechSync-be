@@ -1,4 +1,4 @@
-import { LIMIT_PLAN_CREATE_TEAM, UserError } from '@constants';
+import { LIMIT_PLAN_CREATE_TEAM, TeamError, UserError } from '@constants';
 import { User } from '@features/users/entities/user.entity';
 import {
   ForbiddenException,
@@ -61,5 +61,22 @@ export class TeamService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async update(id: number, input: Partial<Team>) {
+    const result = await this.teamRepository.update(
+      { id },
+      {
+        name: input.name,
+        alias: input.alias,
+        logoUrl: input.logoUrl,
+        settings: input.settings,
+      },
+    );
+    if (result.affected === 0) {
+      throw new NotFoundException(TeamError.TEAM_NOT_FOUND);
+    }
+
+    return true;
   }
 }

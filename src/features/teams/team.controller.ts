@@ -1,16 +1,25 @@
 import { PermissionGuard } from '@common/guard';
-import { ActionPermission, VERSIONING_API } from '@constants';
+import { ActionPermission, SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
 import { CurrentUser, RequirePolicies } from '@decorators';
+
+import { LocatorResourceGuard } from '@features/locator-resource';
 import { IUserSession } from '@interfaces';
 import {
   Body,
   Controller,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreateTeamDto } from './dto';
 import { TeamService } from './team.service';
 
@@ -22,7 +31,7 @@ export class TeamController {
   @ApiOperation({ summary: 'Create team (workspace)' })
   @UseGuards(PermissionGuard)
   @RequirePolicies((ability) => {
-    return ability.can(ActionPermission.create, 'Team');
+    return ability.can(ActionPermission.create, 'team');
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -32,5 +41,16 @@ export class TeamController {
   })
   create(@Body() input: CreateTeamDto, @CurrentUser() user: IUserSession) {
     return this.teamService.create(input, user?.id);
+  }
+
+  @UseGuards(LocatorResourceGuard(SYSTEM_RESOURCE.team), PermissionGuard)
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.update, 'team');
+  })
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ description: 'Team updated successfully', type: Boolean })
+  update(@Param('id') id: number, @CurrentUser() user: IUserSession) {
+    return user;
   }
 }

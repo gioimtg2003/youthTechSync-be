@@ -1,3 +1,4 @@
+import { LocatorResourceModule } from '@features/locator-resource';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AbilityModule } from 'src/ability';
@@ -6,7 +7,11 @@ import { TeamController } from './team.controller';
 import { TeamService } from './team.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Team]), AbilityModule],
+  imports: [
+    TypeOrmModule.forFeature([Team]),
+    AbilityModule,
+    LocatorResourceModule,
+  ],
   controllers: [TeamController],
   providers: [TeamService],
   exports: [TeamService],
