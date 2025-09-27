@@ -15,8 +15,8 @@ import { PostResolver, ResourceLocatorService, TeamResolver } from './resolver';
     PostResolver,
     {
       provide: RESOURCE_RESOLVER,
-      useFactory(a, b) {
-        return [a, b];
+      useFactory(teamResolver, postResolver) {
+        return [teamResolver, postResolver];
       },
       inject: [TeamResolver, PostResolver],
     },
