@@ -12,6 +12,7 @@ import {
 } from '@constants';
 import { Post } from '@features/posts/entities/post.entity';
 import { Resource } from '@features/resources/entities/resource.entity';
+import { Role } from '@features/roles/entities/role.entity';
 import { Team } from '@features/teams/entities/team.entity';
 import { User } from '@features/users/entities/user.entity';
 import { IUserSession } from '@interfaces';
@@ -19,11 +20,13 @@ import { IUserSession } from '@interfaces';
 import { Injectable } from '@nestjs/common';
 
 export type Subjects =
-  | InferSubjects<typeof User, true>
-  | InferSubjects<typeof Resource, true>
-  | InferSubjects<typeof Team, true>
-  | InferSubjects<typeof Post, true>
+  | InferSubjects<typeof User>
+  | InferSubjects<typeof Resource>
+  | InferSubjects<typeof Team>
+  | InferSubjects<typeof Post>
+  | InferSubjects<typeof Role>
   | ResourcePermission;
+
 export type AppAbility = PureAbility<[ActionPermission, Subjects]>;
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { BaseEntity } from '@common/entities/base.entity';
-import { DATABASE_TABLES } from '@constants';
+import { DATABASE_TABLES, SYSTEM_RESOURCE } from '@constants';
 import { Post } from '@features/posts/entities/post.entity';
 import { Resource } from '@features/resources/entities/resource.entity';
 import { User } from '@features/users/entities/user.entity';
@@ -14,7 +14,7 @@ import {
 
 @Entity(DATABASE_TABLES.TEAMS)
 export class Team extends BaseEntity {
-  static readonly modelName = 'Team';
+  static readonly modelName = SYSTEM_RESOURCE.team;
 
   @Column({ type: 'varchar', length: 255 })
   name: string;

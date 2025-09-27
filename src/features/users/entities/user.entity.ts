@@ -14,7 +14,7 @@ import {
 
 @Entity(DATABASE_TABLES.USERS)
 export class User extends BaseEntity {
-  static readonly modelName = 'User';
+  static readonly modelName = 'user';
 
   @Index({ unique: true })
   @Column({ type: 'varchar', length: 100, unique: true })

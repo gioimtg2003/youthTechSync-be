@@ -50,6 +50,10 @@ export enum SYSTEM_RESOURCE {
   all = 'all',
   'user-team' = 'user-team',
   role = 'role',
+  user = 'user',
+  team = 'team',
+  post = 'post',
+  resource = 'resource',
   policy = 'policy',
   settings = 'settings',
   permission = 'permission',
@@ -58,7 +62,7 @@ export enum SYSTEM_RESOURCE {
 
 export type ResourcePermission =
   | `${SYSTEM_RESOURCE}`
-  | `${SYSTEM_RESOURCE}::${number | 'all'}`; // e.g., posts:1, users:2
+  | `${SYSTEM_RESOURCE}::${number | 'all'}`; // e.g., posts:1; users:2,2,3,4,5
 
 export type Policy = `${ActionPermission}:${ResourcePermission}`; // e.g., create:posts:1, read:users:2
 /** ***********End Permission*********** */

@@ -22,7 +22,7 @@ export class TeamController {
   @ApiOperation({ summary: 'Create team (workspace)' })
   @UseGuards(PermissionGuard)
   @RequirePolicies((ability) => {
-    return ability.can(ActionPermission.create, 'team');
+    return ability.can(ActionPermission.create, 'Team');
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)

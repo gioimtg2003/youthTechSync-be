@@ -1,5 +1,5 @@
 import { BaseEntity } from '@common/entities/base.entity';
-import { DATABASE_TABLES, PostStatus } from '@constants';
+import { DATABASE_TABLES, PostStatus, SYSTEM_RESOURCE } from '@constants';
 import { PostAudit } from '@features/post-audits/entities/post-audit.entity';
 import { Team } from '@features/teams/entities/team.entity';
 import { Column, Entity, Index, ManyToOne, OneToMany, Relation } from 'typeorm';
@@ -7,7 +7,7 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity(DATABASE_TABLES.POSTS)
 export class Post extends BaseEntity {
-  static readonly modelName = 'Post';
+  static readonly modelName = SYSTEM_RESOURCE.post;
 
   @Column({ type: 'varchar', length: 255 })
   title: string;

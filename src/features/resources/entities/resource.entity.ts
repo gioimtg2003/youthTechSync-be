@@ -1,11 +1,11 @@
 import { BaseEntity } from '@common/entities/base.entity';
-import { DATABASE_TABLES, ResourceType } from '@constants';
+import { DATABASE_TABLES, ResourceType, SYSTEM_RESOURCE } from '@constants';
 import { Team } from '@features/teams/entities/team.entity';
 import { Column, Entity, Index, ManyToOne, OneToMany, Relation } from 'typeorm';
 
 @Entity(DATABASE_TABLES.RESOURCES)
 export class Resource extends BaseEntity {
-  static readonly modelName = 'Resource';
+  static readonly modelName = SYSTEM_RESOURCE.resource;
 
   @Column({ type: 'varchar', length: 255 })
   name: string;
