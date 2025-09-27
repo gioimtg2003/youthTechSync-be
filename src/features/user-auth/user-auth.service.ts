@@ -39,7 +39,7 @@ export class UserAuthService {
       email: user.email,
       plan: user.plan,
       roles: user.roles?.map((role) => role.name) || [],
-      teams: user.teams?.map((team) => team.alias) || [],
+      teams: user.teams?.map((team) => team.id) || [],
       isAdmin: user?.roles?.some((role) => role.isAdmin === true) || false,
       permissions: user?.roles?.flatMap((role) => role.permission) || [],
     };

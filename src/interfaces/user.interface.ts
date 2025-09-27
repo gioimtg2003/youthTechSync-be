@@ -13,6 +13,6 @@ export interface IUserSession {
   roles?: string[];
   permissions?: string[];
 
-  teams: string[];
+  teams: number[];
   profile?: Record<string, any>;
 }
