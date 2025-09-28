@@ -1,7 +1,8 @@
 import { DATABASE_TABLES, LIMIT_PLAN_CREATE_TEAM, UserError } from '@constants';
+import { TeamService } from '@features/teams/team.service';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 
 @Injectable()
@@ -9,16 +10,17 @@ export class UserTeamService {
   private readonly logger = new Logger(UserTeamService.name);
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly teamService: TeamService,
   ) {}
 
   async findUserById(
     id: number,
-    selectFields: (keyof User)[] = [],
+    selectFields: FindOneOptions<User>['select'] = [],
     relations: string[] = [],
   ) {
     const user = await this.userRepository.findOne({
       where: { id },
-      select: selectFields?.length ? selectFields : undefined,
+      select: selectFields,
       relations: relations?.length ? relations : undefined,
     });
 
@@ -29,18 +31,48 @@ export class UserTeamService {
     return user;
   }
 
-  async deleteUserFromTeam(userId: number, teamId: number) {
+  async deleteUserFromTeam(
+    userId: number,
+    teamId: number,
+    type: 'remove' | 'leave' = 'remove',
+  ) {
     this.logger.log(`Removing user ${userId} from team ${teamId}`);
 
     const user = await this.findUserById(
       userId,
-      ['id', 'teams'],
+      {
+        id: true,
+        teams: {
+          id: true,
+        },
+      },
       [DATABASE_TABLES.TEAMS],
     );
 
     const updatedTeams = (user.teams ?? []).filter(
       (team) => team.id !== teamId,
     );
+
+    if (updatedTeams?.length === 0 && type === 'leave') {
+      const createByUser = await this.teamService.findById(
+        teamId,
+        {
+          createdBy: {
+            id: true,
+          },
+        },
+        [DATABASE_TABLES.USERS],
+      );
+
+      // if the user is the creator of the team, delete the team
+      // otherwise, throw an error as the user cannot leave the team
+      if (createByUser?.createdBy?.id === userId) {
+        await this.teamService.delete(teamId);
+      } else {
+        throw new BadRequestException(UserError.USER_CANNOT_LEAVE_TEAM);
+      }
+    }
+
     const saved = await this.userRepository.save({
       ...user,
       teams: updatedTeams,
@@ -60,7 +92,13 @@ export class UserTeamService {
 
     const user = await this.findUserById(
       userId,
-      ['id', 'plan', 'teams'],
+      {
+        id: true,
+        teams: {
+          id: true,
+        },
+        plan: true,
+      },
       [DATABASE_TABLES.TEAMS],
     );
 

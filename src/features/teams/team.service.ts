@@ -7,7 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOneOptions, Repository } from 'typeorm';
 import { CreateTeamDto } from './dto';
 import { Team } from './entities/team.entity';
 
@@ -19,6 +19,20 @@ export class TeamService {
     @InjectRepository(Team) private readonly teamRepository: Repository<Team>,
     private readonly dataSource: DataSource,
   ) {}
+
+  async findById(
+    id: number,
+    select: FindOneOptions<Team>['select'] = [],
+    relations: string[] = [],
+  ) {
+    const team = await this.teamRepository.findOne({
+      where: { id },
+      select,
+      relations: relations?.length ? relations : undefined,
+    });
+
+    return team;
+  }
 
   async create(input: CreateTeamDto, userId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -73,6 +87,16 @@ export class TeamService {
         settings: input.settings,
       },
     );
+    if (result.affected === 0) {
+      throw new NotFoundException(TeamError.TEAM_NOT_FOUND);
+    }
+
+    return true;
+  }
+
+  async delete(id: number) {
+    const result = await this.teamRepository.delete({ id });
+
     if (result.affected === 0) {
       throw new NotFoundException(TeamError.TEAM_NOT_FOUND);
     }

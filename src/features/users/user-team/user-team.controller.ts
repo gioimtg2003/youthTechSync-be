@@ -91,6 +91,6 @@ export class UserTeamController {
     @Param('id', ParseIntPipe) teamId: number,
     @CurrentUser() user: IUserSession,
   ) {
-    return this.userTeamService.deleteUserFromTeam(user.id, teamId);
+    return this.userTeamService.deleteUserFromTeam(user.id, teamId, 'leave');
   }
 }
