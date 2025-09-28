@@ -22,12 +22,13 @@ export function LocatorResourceGuard(
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const req = context.switchToHttp().getRequest();
-      const id = +req.params?.id || DEFAULT_ID;
+      const resourceId = +req.params?.id || DEFAULT_ID;
 
       const teamId = await this.resourceLocator.getTeamIdForResource(
         resource,
-        id,
+        resourceId,
       );
+
       const userTeams: number[] = req.session?.user?.teams || [];
       return userTeams.includes(teamId);
     }

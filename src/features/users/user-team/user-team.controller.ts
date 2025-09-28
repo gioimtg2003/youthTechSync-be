@@ -1,6 +1,7 @@
 import { PermissionGuard } from '@common/guard';
-import { ActionPermission, VERSIONING_API } from '@constants';
+import { ActionPermission, SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
 import { CurrentUser, RequirePolicies } from '@decorators';
+import { LocatorResourceGuard } from '@features/locator-resource';
 import { IUserSession } from '@interfaces';
 import {
   Body,
@@ -8,20 +9,23 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseIntPipe,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { AddUserToTeamDto, LeaveTeamDto, RemoveUserFromTeamDto } from './dto';
+import { AddUserToTeamDto, RemoveUserFromTeamDto } from './dto';
 import { UserTeamService } from './user-team.service';
 
 @ApiTags('User Team')
-@Controller({ path: 'user-team', version: VERSIONING_API.v1 })
+@Controller({ path: SYSTEM_RESOURCE['user-team'], version: VERSIONING_API.v1 })
 export class UserTeamController {
   constructor(private readonly userTeamService: UserTeamService) {}
+
   @UseGuards(PermissionGuard)
   @RequirePolicies((ability) => {
-    return ability.can(ActionPermission.read, 'user-team');
+    return ability.can(ActionPermission.read, SYSTEM_RESOURCE['user-team']);
   })
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -35,7 +39,10 @@ export class UserTeamController {
 
   @UseGuards(PermissionGuard)
   @RequirePolicies((ability) => {
-    return ability.can(ActionPermission.create, 'user-team');
+    return (
+      ability.can(ActionPermission.create, SYSTEM_RESOURCE['user-team']) ||
+      ability.can(ActionPermission.update, SYSTEM_RESOURCE['user-team'])
+    );
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -47,28 +54,43 @@ export class UserTeamController {
     return this.userTeamService.addUserToTeam(body.userId, body.teamId);
   }
 
-  @UseGuards(PermissionGuard)
+  @UseGuards(
+    LocatorResourceGuard(SYSTEM_RESOURCE['user-team']),
+    PermissionGuard,
+  )
   @RequirePolicies((ability) => {
-    return ability.can(ActionPermission.delete, 'user-team');
+    return ability.can(ActionPermission.update, SYSTEM_RESOURCE['user-team']);
   })
-  @Post('remove')
+  @Post('remove/:id')
   @HttpCode(HttpStatus.OK)
   @ApiCreatedResponse({
     description: 'User removed from team successfully',
     type: Boolean,
   })
-  deleteUserFromTeam(@Body() body: RemoveUserFromTeamDto) {
-    return this.userTeamService.deleteUserFromTeam(body.userId, body.teamId);
+  deleteUserFromTeam(
+    @Param('id', ParseIntPipe) teamId: number,
+    @Body() body: RemoveUserFromTeamDto,
+  ) {
+    return this.userTeamService.deleteUserFromTeam(body.userId, teamId);
   }
 
-  @UseGuards(PermissionGuard)
-  @Post('leave')
+  @UseGuards(
+    LocatorResourceGuard(SYSTEM_RESOURCE['user-team']),
+    PermissionGuard,
+  )
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.update, SYSTEM_RESOURCE['user-team']);
+  })
+  @Post('leave/:id')
   @HttpCode(HttpStatus.OK)
   @ApiCreatedResponse({
     description: 'User left the team successfully',
     type: Boolean,
   })
-  leaveTeam(@Body() body: LeaveTeamDto, @CurrentUser() user: IUserSession) {
-    return this.userTeamService.deleteUserFromTeam(user.id, body.teamId);
+  leaveTeam(
+    @Param('id', ParseIntPipe) teamId: number,
+    @CurrentUser() user: IUserSession,
+  ) {
+    return this.userTeamService.deleteUserFromTeam(user.id, teamId);
   }
 }

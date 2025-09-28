@@ -24,14 +24,14 @@ import { CreateTeamDto } from './dto';
 import { TeamService } from './team.service';
 
 @ApiTags('Team')
-@Controller({ path: 'team', version: VERSIONING_API.v1 })
+@Controller({ path: SYSTEM_RESOURCE.team, version: VERSIONING_API.v1 })
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
 
   @ApiOperation({ summary: 'Create team (workspace)' })
   @UseGuards(PermissionGuard)
   @RequirePolicies((ability) => {
-    return ability.can(ActionPermission.create, 'team');
+    return ability.can(ActionPermission.create, SYSTEM_RESOURCE.team);
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -45,7 +45,7 @@ export class TeamController {
 
   @UseGuards(LocatorResourceGuard(SYSTEM_RESOURCE.team), PermissionGuard)
   @RequirePolicies((ability) => {
-    return ability.can(ActionPermission.update, 'team');
+    return ability.can(ActionPermission.update, SYSTEM_RESOURCE.team);
   })
   @Patch(':id')
   @HttpCode(HttpStatus.OK)

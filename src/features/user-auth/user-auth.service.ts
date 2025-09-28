@@ -1,8 +1,9 @@
+import { UserError } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { UserService } from '@features/users';
 import { User } from '@features/users/entities/user.entity';
 import { IUserSession } from '@interfaces';
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class UserAuthService {
@@ -12,6 +13,22 @@ export class UserAuthService {
     private readonly userService: UserService,
     private readonly cryptoService: CryptoService,
   ) {}
+
+  async register(userData: Partial<User>) {
+    const { password, username, email } = userData;
+
+    const user = await this.userService.create({
+      username,
+      email,
+      password,
+    });
+
+    if (!user) {
+      throw new BadRequestException(UserError.USER_CANNOT_CREATE);
+    }
+
+    return true;
+  }
 
   async validate(username: string, password: string) {
     const user = await this.userService.findByUsernameOrEmail(

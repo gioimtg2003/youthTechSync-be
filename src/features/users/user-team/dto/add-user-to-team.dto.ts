@@ -1,4 +1,4 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber } from 'class-validator';
 
 export class AddUserToTeamDto {
@@ -18,4 +18,3 @@ export class AddUserToTeamDto {
 }
 
 export class RemoveUserFromTeamDto extends AddUserToTeamDto {}
-export class LeaveTeamDto extends PickType(RemoveUserFromTeamDto, ['teamId']) {}

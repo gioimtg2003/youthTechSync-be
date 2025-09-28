@@ -12,8 +12,9 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { UserLoginDto } from './dto';
+import { UserLoginDto, UserRegisterDto } from './dto';
 import { UserAuthGuard } from './guards';
+import { UserAuthService } from './user-auth.service';
 
 @Controller({
   path: 'user-auth',
@@ -21,7 +22,14 @@ import { UserAuthGuard } from './guards';
 })
 @ApiTags('User Auth')
 export class UserAuthController {
-  constructor() {}
+  constructor(private readonly userAuthService: UserAuthService) {}
+
+  @Post('register')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ description: 'User registered successfully', type: Boolean })
+  async register(@Body() userData: UserRegisterDto) {
+    return this.userAuthService.register(userData);
+  }
 
   @UseGuards(AuthGuard('user-local'))
   @Post('login')
