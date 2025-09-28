@@ -12,3 +12,5 @@ export const VERSIONING_API = {
 };
 
 export const DEFAULT_ID = -1;
+
+export const SEPARATOR_POLICY = '::';

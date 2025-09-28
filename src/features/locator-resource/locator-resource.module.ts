@@ -1,6 +1,5 @@
 import { PostModule } from '@features/posts';
-import { TeamModule } from '@features/teams';
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { RESOURCE_RESOLVER } from './constants';
 import { PostResolver, ResourceLocatorService, TeamResolver } from './resolver';
 
@@ -8,7 +7,7 @@ import { PostResolver, ResourceLocatorService, TeamResolver } from './resolver';
  * This module is handle team resource locator
  */
 @Module({
-  imports: [forwardRef(() => TeamModule), forwardRef(() => PostModule)],
+  imports: [PostModule],
   providers: [
     ResourceLocatorService,
     TeamResolver,

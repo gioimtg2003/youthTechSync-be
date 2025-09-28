@@ -1,5 +1,5 @@
 import { LocatorResourceModule } from '@features/locator-resource';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AbilityModule } from 'src/ability';
 import { Team } from './entities/team.entity';
@@ -10,7 +10,7 @@ import { TeamService } from './team.service';
   imports: [
     TypeOrmModule.forFeature([Team]),
     AbilityModule,
-    LocatorResourceModule,
+    forwardRef(() => LocatorResourceModule),
   ],
   controllers: [TeamController],
   providers: [TeamService],

@@ -17,7 +17,9 @@ const appConfig = buildConfig();
 async function bootstrap() {
   const logger = new Logger('bootstrap');
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    snapshot: true,
+  });
   const PORT = process.env.PORT || 3000;
   logger.debug(
     `🔥 Application listening on http://localhost:${PORT}/api/v${CURRENT_VERSION_API}`,
