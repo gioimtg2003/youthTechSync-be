@@ -29,9 +29,6 @@ export class UserTeamService {
     return user;
   }
 
-  // TODO: logic check permission before leave team
-  // case 1: user is the last admin in the team
-  // case 2: user is not in the team
   async deleteUserFromTeam(userId: number, teamId: number) {
     this.logger.log(`Removing user ${userId} from team ${teamId}`);
 
