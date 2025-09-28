@@ -18,6 +18,7 @@ import { User } from '@features/users/entities/user.entity';
 import { IUserSession } from '@interfaces';
 
 import { Injectable } from '@nestjs/common';
+import { parserPolicy } from '@utils';
 
 export type Subjects =
   | InferSubjects<typeof User>
@@ -38,13 +39,8 @@ export class AbilityFactory {
       can(ActionPermission.manage, SYSTEM_RESOURCE.all);
     } else {
       user?.permissions?.forEach((permission) => {
-        const [action, resource] = permission.split(':') as [
-          ActionPermission,
-          SYSTEM_RESOURCE,
-        ];
-        can(action, resource, {
-          teamId: { $in: user.teams },
-        });
+        const { action, resource } = parserPolicy(permission);
+        can(action, resource);
       });
     }
 
