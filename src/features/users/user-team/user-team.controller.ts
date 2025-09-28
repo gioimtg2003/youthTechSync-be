@@ -5,7 +5,6 @@ import { IUserSession } from '@interfaces';
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -52,7 +51,7 @@ export class UserTeamController {
   @RequirePolicies((ability) => {
     return ability.can(ActionPermission.delete, 'user-team');
   })
-  @Delete('remove')
+  @Post('remove')
   @HttpCode(HttpStatus.OK)
   @ApiCreatedResponse({
     description: 'User removed from team successfully',
@@ -63,7 +62,7 @@ export class UserTeamController {
   }
 
   @UseGuards(PermissionGuard)
-  @Delete('leave')
+  @Post('leave')
   @HttpCode(HttpStatus.OK)
   @ApiCreatedResponse({
     description: 'User left the team successfully',
