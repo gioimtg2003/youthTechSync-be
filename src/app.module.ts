@@ -8,7 +8,7 @@ import { TeamModule } from '@features/teams';
 import { UserAuthModule } from '@features/user-auth';
 import { UserModule } from '@features/users';
 import { UserTeamModule } from '@features/users/user-team';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -16,6 +16,7 @@ import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Environment } from './config';
+import { TeamMiddleware } from './middleware';
 
 @Module({
   imports: [
@@ -56,4 +57,8 @@ import { Environment } from './config';
     AppService,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(TeamMiddleware).forRoutes('*');
+  }
+}
