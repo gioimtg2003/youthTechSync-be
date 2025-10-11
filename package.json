@@ -47,7 +47,7 @@
     "class-validator": "^0.14.2",
     "connect-redis": "^9.0.0",
     "dayjs": "^1.11.18",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.3",
     "express-session": "^1.18.2",
     "ioredis": "^5.8.1",
     "lodash": "^4.17.21",
