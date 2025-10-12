@@ -47,7 +47,7 @@ export class TeamController {
   @RequirePolicies((ability) => {
     return ability.can(ActionPermission.update, SYSTEM_RESOURCE.team);
   })
-  @Patch(':id')
+  @Patch(':teamAlias')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ description: 'Team updated successfully', type: Boolean })
   update(@Param('id') id: number, @CurrentUser() user: IUserSession) {

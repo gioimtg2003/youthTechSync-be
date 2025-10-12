@@ -51,7 +51,7 @@ export class UserTeamController {
     type: Boolean,
   })
   addToTeam(@Body() body: AddUserToTeamDto) {
-    return this.userTeamService.addUserToTeam(body.userId, body.teamId);
+    return this.userTeamService.addUserToTeam(body.userId);
   }
 
   @UseGuards(

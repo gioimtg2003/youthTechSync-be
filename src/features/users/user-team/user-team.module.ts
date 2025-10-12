@@ -1,3 +1,4 @@
+import { TeamContextService } from '@common/services';
 import { LocatorResourceModule } from '@features/locator-resource';
 import { TeamModule } from '@features/teams';
 import { Module } from '@nestjs/common';
@@ -16,6 +17,6 @@ import { UserTeamService } from './user-team.service';
   ],
   controllers: [UserTeamController],
   exports: [UserTeamService],
-  providers: [UserTeamService],
+  providers: [UserTeamService, TeamContextService],
 })
 export class UserTeamModule {}

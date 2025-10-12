@@ -1,3 +1,4 @@
+import { TeamContextService } from '@common/services';
 import { DATABASE_TABLES, LIMIT_PLAN_CREATE_TEAM, UserError } from '@constants';
 import { TeamService } from '@features/teams/team.service';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
@@ -11,6 +12,7 @@ export class UserTeamService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly teamService: TeamService,
+    private readonly teamContext: TeamContextService,
   ) {}
 
   async findUserById(
@@ -87,8 +89,10 @@ export class UserTeamService {
   /**
    * Add user to team with max team join based on plan of user
    */
-  async addUserToTeam(userId: number, teamId: number) {
-    this.logger.log(`Adding user ${userId} to team ${teamId}`);
+  async addUserToTeam(userId: number) {
+    this.logger.log(
+      `Adding user ${userId} to team ${this.teamContext.teamAlias}`,
+    );
 
     const user = await this.findUserById(
       userId,
@@ -96,6 +100,7 @@ export class UserTeamService {
         id: true,
         teams: {
           id: true,
+          alias: true,
         },
         plan: true,
       },
@@ -111,7 +116,7 @@ export class UserTeamService {
 
     const saved = await this.userRepository.save({
       ...user,
-      teams: [...(user.teams ?? []), { id: teamId }],
+      teams: [...(user.teams ?? []), { id: 1 }],
     });
 
     if (!saved) {

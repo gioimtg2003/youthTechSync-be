@@ -8,13 +8,6 @@ export class AddUserToTeamDto {
   })
   @IsNumber()
   userId: number;
-
-  @ApiProperty({
-    example: 1,
-    description: 'ID of the team to which the user will be added',
-  })
-  @IsNumber()
-  teamId: number;
 }
 
 export class RemoveUserFromTeamDto extends AddUserToTeamDto {}
