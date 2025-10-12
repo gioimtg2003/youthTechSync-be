@@ -13,7 +13,7 @@ export class TeamContextService {
     this.als.run({ team }, callback);
   }
 
-  get teamId(): string {
+  get teamAlias(): string {
     return this.als.getStore()?.team;
   }
 }

@@ -8,6 +8,10 @@ export class TeamMiddleware implements NestMiddleware {
 
   use(req: Request, _: Response, next: NextFunction) {
     const team = req.headers['x-team-alias'] as string;
+
+    if (!team) {
+      return next();
+    }
     this.teamContext.run(team, () => next());
   }
 }

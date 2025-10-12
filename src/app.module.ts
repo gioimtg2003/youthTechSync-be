@@ -1,3 +1,5 @@
+import { TeamContextService } from '@common/services';
+import { VERSIONING_API } from '@constants';
 import { PolicyModule } from '@features/policy';
 import { PostAuditModule } from '@features/post-audits';
 import { PostModule } from '@features/posts';
@@ -8,7 +10,12 @@ import { TeamModule } from '@features/teams';
 import { UserAuthModule } from '@features/user-auth';
 import { UserModule } from '@features/users';
 import { UserTeamModule } from '@features/users/user-team';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -55,10 +62,17 @@ import { TeamMiddleware } from './middleware';
       useClass: SentryGlobalFilter,
     },
     AppService,
+    TeamContextService,
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(TeamMiddleware).forRoutes('*');
+    consumer
+      .apply(TeamMiddleware)
+      .exclude({
+        path: `/api/${VERSIONING_API.v1}/user-auth/(.*)`,
+        method: RequestMethod.ALL,
+      })
+      .forRoutes('*');
   }
 }
