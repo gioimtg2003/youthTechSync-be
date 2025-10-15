@@ -75,6 +75,15 @@ async function bootstrap() {
       .setTitle('Youth TechSync API')
       .setDescription('The Youth TechSync API description')
       .setVersion(`v${CURRENT_VERSION_API}`)
+      .addApiKey(
+        {
+          type: 'apiKey',
+          name: 'x-team-alias',
+          in: 'header',
+          description: 'Team alias to access team specific resources',
+        },
+        'x-team-alias',
+      )
       .build();
 
     const document = SwaggerModule.createDocument(app, config, {});

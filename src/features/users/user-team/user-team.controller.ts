@@ -1,6 +1,6 @@
 import { PermissionGuard } from '@common/guard';
 import { ActionPermission, SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
-import { CurrentUser, RequirePolicies } from '@decorators';
+import { CurrentUser, HeaderTeamAlias, RequirePolicies } from '@decorators';
 import { LocatorResourceGuard } from '@features/locator-resource';
 import { IUserSession } from '@interfaces';
 import {
@@ -18,6 +18,7 @@ import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { AddUserToTeamDto, RemoveUserFromTeamDto } from './dto';
 import { UserTeamService } from './user-team.service';
 
+@HeaderTeamAlias()
 @ApiTags('User Team')
 @Controller({ path: SYSTEM_RESOURCE['user-team'], version: VERSIONING_API.v1 })
 export class UserTeamController {
