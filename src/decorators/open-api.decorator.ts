@@ -1,5 +1,6 @@
+import { HEADER_TEAM_ALIAS } from '@constants';
 import { ApiSecurity } from '@nestjs/swagger';
 
 export function HeaderTeamAlias() {
-  return ApiSecurity('x-team-alias');
+  return ApiSecurity(HEADER_TEAM_ALIAS);
 }

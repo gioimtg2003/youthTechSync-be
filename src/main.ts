@@ -1,4 +1,4 @@
-import { CURRENT_VERSION_API } from '@constants';
+import { CURRENT_VERSION_API, HEADER_TEAM_ALIAS } from '@constants';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -78,11 +78,11 @@ async function bootstrap() {
       .addApiKey(
         {
           type: 'apiKey',
-          name: 'x-team-alias',
+          name: HEADER_TEAM_ALIAS,
           in: 'header',
           description: 'Team alias to access team specific resources',
         },
-        'x-team-alias',
+        HEADER_TEAM_ALIAS,
       )
       .build();
 
