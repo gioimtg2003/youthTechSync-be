@@ -112,6 +112,9 @@ export class UserTeamService {
       [DATABASE_TABLES.TEAMS],
     );
 
+    if (!user?.teams?.find((team) => team.id === this.teamContext.teamId))
+      throw new ForbiddenException(UserError.USER_CANNOT_JOIN_TEAM);
+
     const countTeams = user?.teams?.length ?? 0;
     const maxTeamJoin = LIMIT_PLAN_CREATE_TEAM[user.plan] ?? 0;
 
@@ -121,7 +124,7 @@ export class UserTeamService {
 
     const saved = await this.userRepository.save({
       ...user,
-      teams: [...(user.teams ?? []), { id: 1 }],
+      teams: [...(user.teams ?? []), { id: this.teamContext.teamId }],
     });
 
     if (!saved) {
