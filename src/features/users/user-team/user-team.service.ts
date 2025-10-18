@@ -1,7 +1,12 @@
-import { TeamContextService } from '@common/services';
+import { TeamContextService } from '@common/modules';
 import { DATABASE_TABLES, LIMIT_PLAN_CREATE_TEAM, UserError } from '@constants';
 import { TeamService } from '@features/teams/team.service';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';

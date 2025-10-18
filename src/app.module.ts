@@ -1,3 +1,4 @@
+import { TeamContextModule } from '@common/modules';
 import { TeamContextService } from '@common/services';
 import { VERSIONING_API } from '@constants';
 import { PolicyModule } from '@features/policy';
@@ -54,6 +55,7 @@ import { TeamMiddleware } from './middleware';
     UserAuthModule,
     PolicyModule,
     UserTeamModule,
+    TeamContextModule,
   ],
   controllers: [AppController],
   providers: [

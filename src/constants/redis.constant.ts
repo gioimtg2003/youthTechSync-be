@@ -6,4 +6,9 @@ export enum REDIS_MODULE_CONNECTION {
 export const CACHE_KEY_SYSTEM = {
   RESOURCE_POSTS: 'resource:posts',
   USER: 'user',
+  TEAM_ALIAS: 'team:alias',
+};
+
+export const REDIS_CACHE_TTL = {
+  TEAM_ALIAS: 3600,
 };
