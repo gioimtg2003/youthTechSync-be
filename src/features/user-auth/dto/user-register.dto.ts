@@ -1,10 +1,11 @@
+import { EmailRegex, UsernameRegex } from '@constants';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class UserRegisterDto {
   @ApiProperty({ example: 'user1' })
   @IsString()
-  @Matches(/^[a-zA-Z0-9_-]{4,20}$/)
+  @Matches(UsernameRegex)
   @MinLength(4, {
     message: 'Username must be at least 4 characters long',
   })
@@ -15,7 +16,7 @@ export class UserRegisterDto {
 
   @ApiProperty({ example: 'user1' })
   @IsString()
-  @Matches(/^[\w-.]+@([\w-.]+(\.[\w-.]+)+)$/)
+  @Matches(EmailRegex)
   @MinLength(4, {
     message: 'Email must be at least 4 characters long',
   })

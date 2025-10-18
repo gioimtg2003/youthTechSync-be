@@ -1,4 +1,4 @@
-import { UserError } from '@constants';
+import { EmailRegex, UserError } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,9 +27,7 @@ export class UserService {
     select?: (keyof User)[],
     relations?: string[],
   ) {
-    const emailRegex = /^[\w-.]+@([\w-.]+(\.[\w-.]+)+)$/;
-
-    const condition = emailRegex.test(input)
+    const condition = EmailRegex.test(input)
       ? { email: input }
       : { username: input };
 

@@ -1,3 +1,4 @@
+import { TeamAliasRegex } from '@constants';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
@@ -12,7 +13,7 @@ export class CreateTeamDto {
   @ApiProperty({ example: 'My Team' })
   name: string;
 
-  @Matches(/^[a-z0-9]([a-z0-9-]{1,61}[a-z0-9])?$/, {
+  @Matches(TeamAliasRegex, {
     message:
       'Alias must be 3-63 characters long, only lowercase letters, numbers, and hyphens. Cannot start or end with a hyphen.',
   })
