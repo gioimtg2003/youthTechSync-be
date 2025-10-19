@@ -17,6 +17,12 @@ export class UserAuthService {
   async register(userData: Partial<User>) {
     const { password, username, email } = userData;
 
+    const found = await this.userService.findByUsernameOrEmail(username, [
+      'id',
+    ]);
+
+    if (found) throw new BadRequestException(UserError.USER_ALREADY_EXISTS);
+
     const user = await this.userService.create({
       username,
       email,
