@@ -11,3 +11,13 @@ export const parseJsonSafely = <T = any>(json: string | any): T => {
 
   return json;
 };
+
+export function joinPath(...parts: string[]) {
+  return (
+    '/' +
+    parts
+      .map((p) => p.replace(/^\/|\/$/g, '')) // remove leading/trailing slashes
+      .filter(Boolean)
+      .join('/')
+  );
+}
