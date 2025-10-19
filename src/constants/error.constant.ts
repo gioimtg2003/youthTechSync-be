@@ -7,6 +7,7 @@ export enum UserError {
   USER_CANNOT_JOIN_TEAM = 104,
   USER_CANNOT_LEAVE_TEAM = 105,
   CREATE_USER_FAILED = 106,
+  USER_ALREADY_EXISTS = 107,
 }
 
 /** *****************End***************** */

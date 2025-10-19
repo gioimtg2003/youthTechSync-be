@@ -24,12 +24,12 @@ export class TeamContextService {
     let teamId = await this.cacheService.get(
       `${CACHE_KEY_SYSTEM.TEAM_ALIAS}:${team}`,
     );
+
     if (!teamId) {
       const teamEntity = await this.teamRepository.findOne({
         where: { alias: team },
         select: { id: true },
       });
-
       if (!teamEntity) throw new BadRequestException(TeamError.TEAM_NOT_FOUND);
       teamId = `${teamEntity.id}`;
 
@@ -41,6 +41,7 @@ export class TeamContextService {
         expires: REDIS_CACHE_TTL.TEAM_ALIAS,
       });
     }
+
     this.als.run({ teamAlias: team, teamId }, callback);
   }
 

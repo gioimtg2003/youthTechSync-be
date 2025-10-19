@@ -6,6 +6,7 @@ import { IUserSession } from '@interfaces';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -15,7 +16,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { AddUserToTeamDto, RemoveUserFromTeamDto } from './dto';
+import {
+  AddUserToTeamDto,
+  CreateUserToTeamDto,
+  RemoveUserFromTeamDto,
+} from './dto';
 import { UserTeamService } from './user-team.service';
 
 @HeaderTeamAlias()
@@ -45,7 +50,7 @@ export class UserTeamController {
       ability.can(ActionPermission.update, SYSTEM_RESOURCE['user-team'])
     );
   })
-  @Post()
+  @Post('add')
   @HttpCode(HttpStatus.CREATED)
   @ApiCreatedResponse({
     description: 'User added to team successfully',
@@ -55,6 +60,26 @@ export class UserTeamController {
     return this.userTeamService.addUserToTeam(body.userId);
   }
 
+  @UseGuards(PermissionGuard)
+  @RequirePolicies((ability) => {
+    return (
+      ability.can(ActionPermission.create, SYSTEM_RESOURCE['user-team']) ||
+      ability.can(ActionPermission.update, SYSTEM_RESOURCE['user-team'])
+    );
+  })
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({
+    description: 'User added to team successfully',
+    type: Boolean,
+  })
+  createUserToTeam(
+    @Body() body: CreateUserToTeamDto,
+    @CurrentUser() user: IUserSession,
+  ) {
+    return this.userTeamService.createUserToTeam(user.id, body);
+  }
+
   @UseGuards(
     LocatorResourceGuard(SYSTEM_RESOURCE['user-team']),
     PermissionGuard,
@@ -62,7 +87,7 @@ export class UserTeamController {
   @RequirePolicies((ability) => {
     return ability.can(ActionPermission.update, SYSTEM_RESOURCE['user-team']);
   })
-  @Post('remove/:id')
+  @Delete('remove/:id')
   @HttpCode(HttpStatus.OK)
   @ApiCreatedResponse({
     description: 'User removed from team successfully',
@@ -82,7 +107,7 @@ export class UserTeamController {
   @RequirePolicies((ability) => {
     return ability.can(ActionPermission.update, SYSTEM_RESOURCE['user-team']);
   })
-  @Post('leave/:id')
+  @Delete('leave/:id')
   @HttpCode(HttpStatus.OK)
   @ApiCreatedResponse({
     description: 'User left the team successfully',

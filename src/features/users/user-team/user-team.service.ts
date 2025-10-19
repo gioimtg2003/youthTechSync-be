@@ -133,6 +133,49 @@ export class UserTeamService {
     return true;
   }
 
+  async createUserToTeam(userId: number, user: Partial<User>) {
+    const { username, email } = user;
+    this.logger.log(
+      `Creating user ${user.email} to team ${this.teamContext.teamAlias}`,
+    );
+
+    const currentUser = await this.findUserById(
+      userId,
+      {
+        id: true,
+        teams: {
+          id: true,
+        },
+        plan: true,
+      },
+      [DATABASE_TABLES.TEAMS],
+    );
+
+    if (
+      !currentUser?.teams?.find((team) => team.id === this.teamContext.teamId)
+    )
+      throw new ForbiddenException(UserError.CREATE_USER_FAILED);
+
+    const countTeams = currentUser?.teams?.length ?? 0;
+    const maxTeamJoin = LIMIT_PLAN_CREATE_TEAM[currentUser.plan] ?? 0;
+    if (countTeams >= maxTeamJoin) {
+      throw new BadRequestException(UserError.USER_REACHES_JOIN_TEAM_LIMIT);
+    }
+
+    const newUser = this.userRepository.create({
+      username,
+      email,
+      password: '', // set empty password, user can set password later
+      teams: [{ id: this.teamContext.teamId }],
+    });
+    const saved = await this.userRepository.save(newUser);
+
+    if (!saved) {
+      throw new BadRequestException(UserError.CREATE_USER_FAILED);
+    }
+    return true;
+  }
+
   async getMyTeams(id: number) {
     this.logger.log(`Getting teams for user ${id}`);
     const teams = await this.userRepository
