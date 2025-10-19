@@ -1,4 +1,4 @@
-import { TeamContextService } from '@common/services';
+import { TeamContextService } from '@common/modules';
 import { HEADER_TEAM_ALIAS, SystemError } from '@constants';
 import {
   BadRequestException,
