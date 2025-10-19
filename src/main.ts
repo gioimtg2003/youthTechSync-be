@@ -1,4 +1,8 @@
-import { CURRENT_VERSION_API, HEADER_TEAM_ALIAS } from '@constants';
+import {
+  CACHE_KEY_SYSTEM,
+  CURRENT_VERSION_API,
+  HEADER_TEAM_ALIAS,
+} from '@constants';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -45,7 +49,7 @@ async function bootstrap() {
 
   const store = new RedisStore({
     client: redisClient,
-    prefix: 'sess:',
+    prefix: `${CACHE_KEY_SYSTEM.SESSION}:`,
     ttl: appConfig.cookie.maxAge / 1000,
   });
 
