@@ -87,6 +87,11 @@ export class AppModule implements NestModule {
           method: RequestMethod.GET,
           version: VERSIONING_API.v1,
         },
+        {
+          path: `${SYSTEM_RESOURCE.team}`,
+          method: RequestMethod.POST,
+          version: VERSIONING_API.v1,
+        },
       )
       .forRoutes('*');
   }
