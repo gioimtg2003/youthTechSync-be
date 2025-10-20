@@ -103,4 +103,18 @@ export class TeamService {
 
     return true;
   }
+
+  /**
+   * get all team of user
+   */
+  async getTeamByUserId(id: number) {
+    this.logger.log(`Getting team for user ${id}`);
+    const teams = await this.teamRepository.find({
+      where: {
+        users: { id },
+      },
+      select: ['id', 'name', 'alias', 'logoUrl', 'settings'],
+    });
+    return teams;
+  }
 }

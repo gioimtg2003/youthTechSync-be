@@ -65,7 +65,7 @@ const configs: IConfigs = {
       secure: false,
       maxAge: SESSION_MAX_AGE,
       sameSite: 'lax',
-      domain: '.localhost',
+      domain: '.nguyenconggioi.local',
     },
     origin: /.*/,
     environment: Environment.localhost,

@@ -7,6 +7,7 @@ import { IUserSession } from '@interfaces';
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -27,6 +28,21 @@ import { TeamService } from './team.service';
 @Controller({ path: SYSTEM_RESOURCE.team, version: VERSIONING_API.v1 })
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
+
+  @ApiOperation({ summary: 'Get team (workspace)' })
+  @UseGuards(PermissionGuard)
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.read, SYSTEM_RESOURCE.team);
+  })
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: 'Team retrieved successfully',
+    type: Boolean,
+  })
+  get(@CurrentUser() user: IUserSession) {
+    return this.teamService.getTeamByUserId(user?.id);
+  }
 
   @ApiOperation({ summary: 'Create team (workspace)' })
   @UseGuards(PermissionGuard)

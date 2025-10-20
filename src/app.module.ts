@@ -1,6 +1,6 @@
 import { TeamContextModule } from '@common/modules';
 import { TeamContextService } from '@common/services';
-import { VERSIONING_API } from '@constants';
+import { SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
 import { PolicyModule } from '@features/policy';
 import { PostAuditModule } from '@features/post-audits';
 import { PostModule } from '@features/posts';
@@ -71,11 +71,23 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(TeamMiddleware)
-      .exclude({
-        path: 'user-auth/(.*)',
-        method: RequestMethod.POST,
-        version: VERSIONING_API.v1,
-      })
+      .exclude(
+        {
+          path: 'user-auth/(.*)',
+          method: RequestMethod.POST,
+          version: VERSIONING_API.v1,
+        },
+        {
+          path: `${SYSTEM_RESOURCE.user}/me`,
+          method: RequestMethod.GET,
+          version: VERSIONING_API.v1,
+        },
+        {
+          path: `${SYSTEM_RESOURCE.team}`,
+          method: RequestMethod.GET,
+          version: VERSIONING_API.v1,
+        },
+      )
       .forRoutes('*');
   }
 }
