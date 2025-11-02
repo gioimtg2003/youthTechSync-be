@@ -1,7 +1,8 @@
 import { BaseEntity } from '@common/entities/base.entity';
 import { DATABASE_TABLES, Policy, SYSTEM_RESOURCE } from '@constants';
+import { Team } from '@features/teams/entities/team.entity';
 import { User } from '@features/users/entities/user.entity';
-import { Column, Entity, ManyToMany, Relation } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, Relation } from 'typeorm';
 
 @Entity(DATABASE_TABLES.ROLES)
 export class Role extends BaseEntity {
@@ -18,6 +19,9 @@ export class Role extends BaseEntity {
 
   @Column({ type: 'text', array: true, default: [] })
   permission: Policy[];
+
+  @ManyToOne(() => Team, (team) => team.roles)
+  team: Relation<Team>;
 
   @ManyToMany(() => User, (user) => user.roles)
   users: Relation<User>[];

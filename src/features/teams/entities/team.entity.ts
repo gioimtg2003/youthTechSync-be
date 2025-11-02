@@ -2,6 +2,7 @@ import { BaseEntity } from '@common/entities/base.entity';
 import { DATABASE_TABLES, SYSTEM_RESOURCE } from '@constants';
 import { Post } from '@features/posts/entities/post.entity';
 import { Resource } from '@features/resources/entities/resource.entity';
+import { Role } from '@features/roles/entities/role.entity';
 import { User } from '@features/users/entities/user.entity';
 import {
   Column,
@@ -40,6 +41,9 @@ export class Team extends BaseEntity {
 
   @OneToMany(() => Post, (post) => post.team)
   posts: Relation<Post>[];
+
+  @OneToMany(() => Role, (role) => role.team)
+  roles: Relation<Role>[];
 
   @ManyToMany(() => User, (user) => user.teamsCreated)
   createdBy: Relation<User>;
