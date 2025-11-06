@@ -21,7 +21,7 @@ import { ResourceService } from './resource.service';
 export class ResourceController {
   constructor(private readonly resourceService: ResourceService) {}
 
-  @UseGuards(LocatorResourceGuard(SYSTEM_RESOURCE.resource), PermissionGuard)
+  @UseGuards( PermissionGuard)
   @RequirePolicies((ability) => {
     return ability.can(ActionPermission.read, SYSTEM_RESOURCE.resource);
   })
