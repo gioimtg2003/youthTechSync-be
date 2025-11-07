@@ -1,6 +1,7 @@
 import { PermissionGuard } from '@common/guard';
 import { ActionPermission, SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
 import { HeaderTeamAlias, RequirePolicies } from '@decorators';
+import { UserAuthGuard } from '@features/user-auth/guards';
 import {
   Controller,
   Get,
@@ -17,7 +18,7 @@ import { PolicyResourcesService } from './policy-resouces.service';
   path: 'policy-resources',
   version: VERSIONING_API.v1,
 })
-@UseGuards(PermissionGuard)
+@UseGuards(PermissionGuard, UserAuthGuard)
 @HeaderTeamAlias()
 export class PolicyResourcesController {
   constructor(private readonly policyService: PolicyResourcesService) {}

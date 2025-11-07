@@ -1,3 +1,4 @@
+import { AlsModule } from '@common/modules';
 import { CryptoModule } from '@features/crypto';
 import { AuthSerializer } from '@features/passport';
 import { UserModule } from '@features/users';
@@ -12,6 +13,7 @@ import { UserAuthService } from './user-auth.service';
     UserModule,
     CryptoModule,
     PassportModule.register({ session: true }),
+    AlsModule,
   ],
   controllers: [UserAuthController],
   providers: [UserAuthService, AuthSerializer, UserLocalStrategy],

@@ -33,6 +33,7 @@ export enum AuthError {
   AUTH_INVALID_CREDENTIALS = 300,
   AUTH_INVALID_SESSION = 301,
   NOT_AUTHORIZED = 302,
+  AUTH_USER_NOT_IN_TEAM = 303,
 }
 /** *****************End***************** */
 

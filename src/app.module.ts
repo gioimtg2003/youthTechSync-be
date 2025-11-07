@@ -1,4 +1,4 @@
-import { AlsModule, TeamContextService } from '@common/modules';
+import { AlsModule } from '@common/modules';
 
 import {
   HEADER_TEAM_ID,
@@ -73,7 +73,6 @@ import { Environment } from './config';
       useClass: SentryGlobalFilter,
     },
     AppService,
-    TeamContextService,
   ],
 })
 export class AppModule implements NestModule {
@@ -82,7 +81,6 @@ export class AppModule implements NestModule {
     consumer
       .apply((req, _, next) => {
         const teamId = req.headers[HEADER_TEAM_ID] as string;
-        console.log('🚀 ~ TeamMiddleware ~ use ~ teamId:', teamId);
 
         if (!teamId || isNaN(Number(teamId))) {
           throw new BadRequestException(SystemError.REQUIRED__HEADER_TEAM_ID);

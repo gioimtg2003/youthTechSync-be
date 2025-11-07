@@ -1,4 +1,4 @@
-import { AlsModule, TeamContextService } from '@common/modules';
+import { AlsModule } from '@common/modules';
 import { UserTeamModule } from '@features/users/user-team';
 import { Module } from '@nestjs/common';
 import { AbilityModule } from 'src/ability';
@@ -10,7 +10,7 @@ import { PolicyService } from './policy.service';
 @Module({
   imports: [AbilityModule, UserTeamModule, AlsModule],
   controllers: [PolicyController, PolicyResourcesController],
-  providers: [PolicyService, PolicyResourcesService, TeamContextService],
+  providers: [PolicyService, PolicyResourcesService],
   exports: [],
 })
 export class PolicyModule {}
