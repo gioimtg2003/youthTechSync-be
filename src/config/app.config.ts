@@ -26,7 +26,7 @@ type IConfigs = {
 };
 
 export const Origins = {
-  domain: '*.nguyenconggioi.me',
+  domain: '*.nguyenconggioi.tech',
 };
 
 /**
@@ -53,7 +53,7 @@ const configs: IConfigs = {
       secure: true,
       maxAge: SESSION_MAX_AGE,
       sameSite: 'lax',
-      domain: '.nguyenconggioi.me',
+      domain: '.nguyenconggioi.tech',
     },
     environment: Environment.production,
     enableSwagger: false,

@@ -1,5 +1,5 @@
 import { TeamContextService } from '@common/modules';
-import { HEADER_TEAM_ALIAS, SystemError } from '@constants';
+import { HEADER_TEAM_ID, SystemError } from '@constants';
 import {
   BadRequestException,
   Injectable,
@@ -12,11 +12,12 @@ export class TeamMiddleware implements NestMiddleware {
   constructor(private readonly teamContext: TeamContextService) {}
 
   use(req: Request, _: Response, next: NextFunction) {
-    const team = req.headers[HEADER_TEAM_ALIAS] as string;
+    const teamId = req.headers[HEADER_TEAM_ID] as string;
+    console.log('🚀 ~ TeamMiddleware ~ use ~ teamId:', teamId);
 
-    if (!team) {
-      throw new BadRequestException(SystemError.REQUIRED_TEAM_ALIAS);
+    if (!teamId || isNaN(Number(teamId))) {
+      throw new BadRequestException(SystemError.REQUIRED__HEADER_TEAM_ID);
     }
-    this.teamContext.run(team, () => next());
+    this.teamContext.run(Number(teamId), () => next());
   }
 }

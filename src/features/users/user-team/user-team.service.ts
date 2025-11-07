@@ -1,6 +1,6 @@
-import { TeamContextService } from '@common/modules';
 import { DATABASE_TABLES, LIMIT_PLAN_CREATE_TEAM, UserError } from '@constants';
 import { TeamService } from '@features/teams/team.service';
+import { TeamIdContextRequest } from '@interfaces';
 import {
   BadRequestException,
   ForbiddenException,
@@ -8,7 +8,8 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Repository } from 'typeorm';
+import { AsyncLocalStorage } from 'async_hooks';
+import { FindOneOptions, In, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 
 @Injectable()
@@ -17,8 +18,26 @@ export class UserTeamService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly teamService: TeamService,
-    private readonly teamContext: TeamContextService,
+    private readonly als: AsyncLocalStorage<TeamIdContextRequest>,
   ) {}
+
+  async getAllUsersInTeam(ids: number[] = []) {
+    this.logger.log(`Getting all users in team ${this.als.getStore()?.teamId}`);
+
+    if (ids?.length > 0) {
+      return this.userRepository.find({
+        where: { id: In(ids), teams: { id: this.als.getStore()?.teamId } },
+        select: ['id', 'username', 'email'],
+      });
+    }
+
+    const users = await this.userRepository.find({
+      where: { teams: { id: this.als.getStore()?.teamId } },
+      select: ['id', 'username', 'email'],
+    });
+
+    return users;
+  }
 
   async findUserById(
     id: number,
@@ -96,7 +115,7 @@ export class UserTeamService {
    */
   async addUserToTeam(userId: number) {
     this.logger.log(
-      `Adding user ${userId} to team ${this.teamContext.teamAlias}`,
+      `Adding user ${userId} to team ${this.als.getStore()?.teamId}`,
     );
 
     const user = await this.findUserById(
@@ -112,7 +131,7 @@ export class UserTeamService {
       [DATABASE_TABLES.TEAMS],
     );
 
-    if (!user?.teams?.find((team) => team.id === this.teamContext.teamId))
+    if (!user?.teams?.find((team) => team.id === this.als.getStore()?.teamId))
       throw new ForbiddenException(UserError.USER_CANNOT_JOIN_TEAM);
 
     const countTeams = user?.teams?.length ?? 0;
@@ -124,7 +143,7 @@ export class UserTeamService {
 
     const saved = await this.userRepository.save({
       ...user,
-      teams: [...(user.teams ?? []), { id: this.teamContext.teamId }],
+      teams: [...(user.teams ?? []), { id: this.als.getStore()?.teamId }],
     });
 
     if (!saved) {
@@ -136,7 +155,7 @@ export class UserTeamService {
   async createUserToTeam(userId: number, user: Partial<User>) {
     const { username, email } = user;
     this.logger.log(
-      `Creating user ${user.email} to team ${this.teamContext.teamAlias}`,
+      `Creating user ${user.email} to team ${this.als.getStore()?.teamId}`,
     );
 
     const currentUser = await this.findUserById(
@@ -152,7 +171,9 @@ export class UserTeamService {
     );
 
     if (
-      !currentUser?.teams?.find((team) => team.id === this.teamContext.teamId)
+      !currentUser?.teams?.find(
+        (team) => team.id === this.als.getStore()?.teamId,
+      )
     )
       throw new ForbiddenException(UserError.CREATE_USER_FAILED);
 
@@ -166,7 +187,7 @@ export class UserTeamService {
       username,
       email,
       password: '', // set empty password, user can set password later
-      teams: [{ id: this.teamContext.teamId }],
+      teams: [{ id: this.als.getStore()?.teamId }],
     });
     const saved = await this.userRepository.save(newUser);
 

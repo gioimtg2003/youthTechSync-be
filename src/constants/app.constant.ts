@@ -15,4 +15,4 @@ export const DEFAULT_ID = -1;
 
 export const SEPARATOR_POLICY = '::';
 
-export const HEADER_TEAM_ALIAS = 'x-team-alias';
+export const HEADER_TEAM_ID = 'x-team-id';

@@ -1,7 +1,6 @@
 import { PermissionGuard } from '@common/guard';
 import { ActionPermission, SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
 import { CurrentTeam, RequirePolicies } from '@decorators';
-import { LocatorResourceGuard } from '@features/locator-resource';
 import {
   Controller,
   Get,
@@ -21,7 +20,7 @@ import { ResourceService } from './resource.service';
 export class ResourceController {
   constructor(private readonly resourceService: ResourceService) {}
 
-  @UseGuards( PermissionGuard)
+  @UseGuards(PermissionGuard)
   @RequirePolicies((ability) => {
     return ability.can(ActionPermission.read, SYSTEM_RESOURCE.resource);
   })

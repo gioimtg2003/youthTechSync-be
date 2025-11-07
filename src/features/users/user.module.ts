@@ -1,3 +1,4 @@
+import { AlsModule } from '@common/modules';
 import { CryptoModule } from '@features/crypto';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,7 +8,12 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [CryptoModule, TypeOrmModule.forFeature([User]), AbilityModule],
+  imports: [
+    CryptoModule,
+    TypeOrmModule.forFeature([User]),
+    AbilityModule,
+    AlsModule,
+  ],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

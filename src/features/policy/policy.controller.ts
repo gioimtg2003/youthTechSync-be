@@ -1,5 +1,5 @@
 import { PermissionGuard } from '@common/guard';
-import { ActionPermission, VERSIONING_API } from '@constants';
+import { ActionPermission, SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
 import { RequirePolicies } from '@decorators';
 import {
   Controller,
@@ -12,7 +12,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { PolicyService } from './policy.service';
 
 @Controller({
-  path: 'policy',
+  path: SYSTEM_RESOURCE.policy,
   version: VERSIONING_API.v1,
 })
 @ApiTags('Policy')
@@ -23,7 +23,7 @@ export class PolicyController {
   @RequirePolicies((ability) => {
     return ability.can(ActionPermission.read, 'policy');
   })
-  @Get('/')
+  @Get()
   @HttpCode(HttpStatus.OK)
   getPolicy() {
     return this.policyService.get();

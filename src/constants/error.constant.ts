@@ -39,6 +39,6 @@ export enum AuthError {
 /** *****************System Error***************** */
 export enum SystemError {
   INTERNAL_SERVER_ERROR = 500,
-  REQUIRED_TEAM_ALIAS = 501,
+  REQUIRED__HEADER_TEAM_ID = 501,
 }
 /** *****************End***************** */

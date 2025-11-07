@@ -1,7 +1,7 @@
 import {
   CACHE_KEY_SYSTEM,
   CURRENT_VERSION_API,
-  HEADER_TEAM_ALIAS,
+  HEADER_TEAM_ID,
 } from '@constants';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -82,11 +82,11 @@ async function bootstrap() {
       .addApiKey(
         {
           type: 'apiKey',
-          name: HEADER_TEAM_ALIAS,
+          name: HEADER_TEAM_ID,
           in: 'header',
           description: 'Team alias to access team specific resources',
         },
-        HEADER_TEAM_ALIAS,
+        HEADER_TEAM_ID,
       )
       .build();
 
