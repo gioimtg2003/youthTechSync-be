@@ -1,12 +1,6 @@
-import { AuthError } from '@constants';
 import { PolicyHandler, REQUIRE_POLICIES_KEY } from '@decorators';
 import { IUserSession } from '@interfaces';
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { AbilityFactory } from 'src/ability';
@@ -28,9 +22,6 @@ export class PermissionGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const user = request?.session?.user as IUserSession;
-    if (!user) {
-      throw new UnauthorizedException(AuthError.NOT_AUTHORIZED);
-    }
 
     const ability = this.abilityFactory.definePoliciesForUser(user);
     return policyHandlers.every((handler) =>
