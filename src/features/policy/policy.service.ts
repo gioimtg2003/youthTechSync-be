@@ -6,7 +6,15 @@ export class PolicyService {
   get() {
     const actions = Object.values(ActionPermission);
     const resource = Object.values(SYSTEM_RESOURCE)?.filter(
-      (res) => ![SYSTEM_RESOURCE.team, SYSTEM_RESOURCE.user].includes(res),
+      (res) =>
+        ![
+          SYSTEM_RESOURCE.team,
+          SYSTEM_RESOURCE.user,
+          SYSTEM_RESOURCE.audit,
+          SYSTEM_RESOURCE.settings,
+          SYSTEM_RESOURCE.permission,
+          SYSTEM_RESOURCE.policy,
+        ].includes(res),
     );
     return { actions, resource };
   }

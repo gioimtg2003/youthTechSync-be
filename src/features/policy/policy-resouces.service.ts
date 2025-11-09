@@ -1,3 +1,5 @@
+import { PostService } from '@features/posts';
+import { RoleService } from '@features/roles';
 import { UserTeamService } from '@features/users/user-team';
 import { TeamIdContextRequest } from '@interfaces';
 import { Injectable, Logger } from '@nestjs/common';
@@ -9,10 +11,22 @@ export class PolicyResourcesService {
   constructor(
     private readonly als: AsyncLocalStorage<TeamIdContextRequest>,
     private readonly userTeamService: UserTeamService,
+    private readonly roleService: RoleService,
+    private readonly postService: PostService,
   ) {}
 
   async getAllUsersInTeam(ids: number[] = []) {
     this.logger.log(`Getting all users in team ${this.als.getStore()?.teamId}`);
     return this.userTeamService.getAllUsersInTeam(ids);
+  }
+
+  async getAllRoles(ids: number[] = []) {
+    this.logger.log(`Getting all roles in team ${this.als.getStore()?.teamId}`);
+    return this.roleService.findAll(ids);
+  }
+
+  async getAllPosts(ids: number[] = []) {
+    this.logger.log(`Getting all posts in team ${this.als.getStore()?.teamId}`);
+    return this.postService.findAll(ids);
   }
 }

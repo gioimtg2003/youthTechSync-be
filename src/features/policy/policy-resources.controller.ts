@@ -18,7 +18,7 @@ import { PolicyResourcesService } from './policy-resouces.service';
   path: 'policy-resources',
   version: VERSIONING_API.v1,
 })
-@UseGuards(PermissionGuard, UserAuthGuard)
+@UseGuards(UserAuthGuard, PermissionGuard)
 @HeaderTeamAlias()
 export class PolicyResourcesController {
   constructor(private readonly policyService: PolicyResourcesService) {}
@@ -28,7 +28,25 @@ export class PolicyResourcesController {
   })
   @Get('/user-team')
   @HttpCode(HttpStatus.OK)
-  getResources(@PolicyIds(SYSTEM_RESOURCE['user-team']) resourceIds: number[]) {
+  getUsersTeam(@PolicyIds(SYSTEM_RESOURCE['user-team']) resourceIds: number[]) {
     return this.policyService.getAllUsersInTeam(resourceIds);
+  }
+
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.read, 'role');
+  })
+  @Get('/role')
+  @HttpCode(HttpStatus.OK)
+  getRoles(@PolicyIds(SYSTEM_RESOURCE['role']) resourceIds: number[]) {
+    return this.policyService.getAllRoles(resourceIds);
+  }
+
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.read, 'post');
+  })
+  @Get('/post')
+  @HttpCode(HttpStatus.OK)
+  getPosts(@PolicyIds(SYSTEM_RESOURCE['post']) resourceIds: number[]) {
+    return this.policyService.getAllPosts(resourceIds);
   }
 }

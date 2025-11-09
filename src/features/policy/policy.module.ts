@@ -1,4 +1,6 @@
 import { AlsModule } from '@common/modules';
+import { PostModule } from '@features/posts';
+import { RoleModule } from '@features/roles';
 import { UserTeamModule } from '@features/users/user-team';
 import { Module } from '@nestjs/common';
 import { AbilityModule } from 'src/ability';
@@ -8,7 +10,7 @@ import { PolicyController } from './policy.controller';
 import { PolicyService } from './policy.service';
 
 @Module({
-  imports: [AbilityModule, UserTeamModule, AlsModule],
+  imports: [AbilityModule, UserTeamModule, AlsModule, RoleModule, PostModule],
   controllers: [PolicyController, PolicyResourcesController],
   providers: [PolicyService, PolicyResourcesService],
   exports: [],
