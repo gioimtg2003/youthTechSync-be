@@ -90,7 +90,9 @@ async function bootstrap() {
       )
       .build();
 
-    const document = SwaggerModule.createDocument(app, config, {});
+    const document = SwaggerModule.createDocument(app, config, {
+      extraModels: [],
+    });
 
     SwaggerModule.setup(`/api/v${CURRENT_VERSION_API}/docs`, app, document);
   }

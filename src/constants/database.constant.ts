@@ -60,6 +60,20 @@ export enum SYSTEM_RESOURCE {
   audit = 'audit',
 }
 
+export const SYSTEM_RESOURCE_AVAILABLE_FOR_PERMISSION = Object.values(
+  SYSTEM_RESOURCE,
+)?.filter(
+  (res) =>
+    ![
+      SYSTEM_RESOURCE.team,
+      SYSTEM_RESOURCE.user,
+      SYSTEM_RESOURCE.audit,
+      SYSTEM_RESOURCE.settings,
+      SYSTEM_RESOURCE.permission,
+      SYSTEM_RESOURCE.policy,
+    ].includes(res),
+);
+
 export type ResourcePermission =
   | `${SYSTEM_RESOURCE}`
   | `${SYSTEM_RESOURCE}::${number | 'all'}`; // e.g., posts:1; users:2,2,3,4,5

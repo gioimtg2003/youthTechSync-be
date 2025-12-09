@@ -1,5 +1,6 @@
 import { TeamAliasRegex } from '@constants';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsNotEmpty,
   IsOptional,
@@ -7,6 +8,7 @@ import {
   Length,
   Matches,
 } from 'class-validator';
+
 export class CreateTeamDto {
   @IsString()
   @IsNotEmpty()
@@ -19,6 +21,7 @@ export class CreateTeamDto {
   })
   @IsOptional()
   @Length(3, 63, { message: 'Alias must be between 3 and 63 characters long.' })
+  @Transform(({ value }) => value.trim())
   @ApiProperty({ example: 'my_team', required: false })
   alias?: string;
 }

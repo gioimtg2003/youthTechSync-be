@@ -1,10 +1,22 @@
 import { SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
-import { Controller } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { HeaderTeamAlias } from '@decorators';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { CreateRoleDto } from './dto';
 
 @ApiTags('Role')
 @Controller({
   path: SYSTEM_RESOURCE.role,
   version: VERSIONING_API.v1,
 })
-export class RoleController {}
+@HeaderTeamAlias()
+export class RoleController {
+  constructor() {}
+
+  @ApiBody({ type: CreateRoleDto })
+  @Post()
+  @ApiOkResponse({ type: Boolean })
+  create(@Body() data: CreateRoleDto) {
+    return data;
+  }
+}
