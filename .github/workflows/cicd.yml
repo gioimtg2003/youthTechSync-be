@@ -72,6 +72,7 @@ jobs:
     environment: 
       name: production
       url: https://no-blogger.fly.dev
+      
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
