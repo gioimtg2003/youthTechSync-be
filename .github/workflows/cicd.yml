@@ -67,9 +67,9 @@ jobs:
     needs: [lint, test, build]
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
 
-    environment:
-      name: production
-      url: https://no-blogger.fly.dev
+    # environment:
+    #   name: production
+    #   url: https://no-blogger.fly.dev
 
     steps:
       - uses: actions/checkout@v4
