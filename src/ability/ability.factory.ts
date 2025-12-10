@@ -10,7 +10,7 @@ import {
   ResourcePermission,
   SYSTEM_RESOURCE,
 } from '@constants';
-import { Post } from '@features/posts/entities/post.entity';
+import { Content } from '@features/content/entities/content.entity';
 import { Resource } from '@features/resources/entities/resource.entity';
 import { Role } from '@features/roles/entities/role.entity';
 import { Team } from '@features/teams/entities/team.entity';
@@ -24,7 +24,7 @@ export type Subjects =
   | InferSubjects<typeof User>
   | InferSubjects<typeof Resource>
   | InferSubjects<typeof Team>
-  | InferSubjects<typeof Post>
+  | InferSubjects<typeof Content>
   | InferSubjects<typeof Role>
   | ResourcePermission;
 

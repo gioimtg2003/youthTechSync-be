@@ -1,4 +1,4 @@
-import { PostService } from '@features/posts';
+import { ContentService } from '@features/content';
 import { RoleService } from '@features/roles';
 import { UserTeamService } from '@features/users/user-team';
 import { TeamIdContextRequest } from '@interfaces';
@@ -12,7 +12,7 @@ export class PolicyResourcesService {
     private readonly als: AsyncLocalStorage<TeamIdContextRequest>,
     private readonly userTeamService: UserTeamService,
     private readonly roleService: RoleService,
-    private readonly postService: PostService,
+    private readonly contentService: ContentService,
   ) {}
 
   async getAllUsersInTeam(ids: number[] = []) {
@@ -27,6 +27,6 @@ export class PolicyResourcesService {
 
   async getAllPosts(ids: number[] = []) {
     this.logger.log(`Getting all posts in team ${this.als.getStore()?.teamId}`);
-    return this.postService.findAll(ids);
+    return this.contentService.findAll(ids);
   }
 }

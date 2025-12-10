@@ -1,5 +1,5 @@
 import { AlsModule } from '@common/modules';
-import { PostModule } from '@features/posts';
+import { ContentModule } from '@features/content';
 import { RoleModule } from '@features/roles';
 import { UserTeamModule } from '@features/users/user-team';
 import { Module } from '@nestjs/common';
@@ -10,7 +10,13 @@ import { PolicyController } from './policy.controller';
 import { PolicyService } from './policy.service';
 
 @Module({
-  imports: [AbilityModule, UserTeamModule, AlsModule, RoleModule, PostModule],
+  imports: [
+    AbilityModule,
+    UserTeamModule,
+    AlsModule,
+    RoleModule,
+    ContentModule,
+  ],
   controllers: [PolicyController, PolicyResourcesController],
   providers: [PolicyService, PolicyResourcesService],
   exports: [],

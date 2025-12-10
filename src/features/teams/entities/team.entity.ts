@@ -1,6 +1,6 @@
 import { BaseEntity } from '@common/entities/base.entity';
 import { DATABASE_TABLES, SYSTEM_RESOURCE } from '@constants';
-import { Post } from '@features/posts/entities/post.entity';
+import { Content } from '@features/content/entities/content.entity';
 import { Resource } from '@features/resources/entities/resource.entity';
 import { Role } from '@features/roles/entities/role.entity';
 import { User } from '@features/users/entities/user.entity';
@@ -39,8 +39,8 @@ export class Team extends BaseEntity {
   @OneToMany(() => Resource, (resource) => resource.team)
   resources: Relation<Resource>[];
 
-  @OneToMany(() => Post, (post) => post.team)
-  posts: Relation<Post>[];
+  @OneToMany(() => Content, (content) => content.team)
+  contents: Relation<Content>[];
 
   @OneToMany(() => Role, (role) => role.team)
   roles: Relation<Role>[];
