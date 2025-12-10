@@ -1,20 +1,7 @@
-import {
-  CreateDateColumn,
-  DeleteDateColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { PrimaryGeneratedColumn } from 'typeorm';
+import { BaseTimeEntity } from './base-time.entity';
 
-export class BaseEntity {
+export class BaseEntity extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @CreateDateColumn({ type: 'timestamptz' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ type: 'timestamptz' })
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt?: Date;
 }
