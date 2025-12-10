@@ -1,7 +1,14 @@
 import { ContextService } from '@common/modules/context';
-import { ActionPermission, Policy, SEPARATOR_POLICY } from '@constants';
+import {
+  ActionPermission,
+  Policy,
+  SEPARATOR_POLICY,
+  SYSTEM_RESOURCE,
+} from '@constants';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { parserPolicy } from '@utils';
+import { groupBy } from 'lodash';
 import { In, Repository } from 'typeorm';
 import { CreateRoleDto, PermissionDto } from './dto';
 import { Role } from './entities/role.entity';
@@ -60,19 +67,85 @@ export class RoleService {
     });
   }
 
+  private parsePermissions(policies: Policy[]): PermissionDto[] {
+    const parsedPolicies = policies?.map((policy) => {
+      const { action, resource, resourceIds } = parserPolicy(policy);
+      return {
+        action: action as ActionPermission,
+        resource: resource,
+        scope: resourceIds,
+      };
+    });
+    const grouped = groupBy(parsedPolicies, 'resource');
+    return Object.entries(grouped).map(([resource, actions]) => ({
+      resource: resource as unknown as SYSTEM_RESOURCE,
+      actions: actions.map((action) => ({
+        action: action.action,
+        scope: action.scope,
+      })),
+    }));
+  }
+
+  // TODO: Add pagination
   async findAll(ids: number[] = []) {
+    let roles = [];
     if (ids?.length > 0) {
-      return this.roleRepository.find({
+      roles = await this.roleRepository.find({
         where: {
           id: In(ids),
           team: { id: this.contextService.getData('tenantId') },
         },
-        select: ['id', 'name', 'description'],
+        select: ['id', 'name', 'description', 'permission'],
       });
     }
-    return this.roleRepository.find({
+    roles = await this.roleRepository.find({
       where: { team: { id: this.contextService.getData('tenantId') } },
-      select: ['id', 'name', 'description'],
+      select: ['id', 'name', 'description', 'permission'],
     });
+
+    return roles?.map((role) => ({
+      ...role,
+      permission: this.parsePermissions(role?.permission ?? []),
+    }));
+  }
+
+  async findById(id: number) {
+    const role = await this.roleRepository.findOne({
+      where: {
+        id,
+        team: { id: this.contextService.getData('tenantId') },
+      },
+      select: ['id', 'name', 'description', 'permission'],
+    });
+
+    const formattedPermissions = this.parsePermissions(role?.permission ?? []);
+
+    return { ...role, permission: formattedPermissions };
+  }
+
+  async delete(id: number) {
+    const result = await this.roleRepository.delete({
+      id,
+      team: { id: this.contextService.getData('tenantId') },
+    });
+    return result.affected > 0;
+  }
+
+  async update(id: number, data: CreateRoleDto) {
+    const { name, description } = data ?? {};
+    const permissions = this.buildPermissions(data?.permissions ?? []);
+
+    const result = await this.roleRepository.update(
+      {
+        id,
+        team: { id: this.contextService.getData('tenantId') },
+      },
+      {
+        name,
+        description,
+        permission: permissions,
+      },
+    );
+    return result.affected > 0;
   }
 }
