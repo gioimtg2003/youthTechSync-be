@@ -16,7 +16,7 @@ export function joinPath(...parts: string[]) {
   return (
     '/' +
     parts
-      .map((p) => p.replace(/^\/|\/$/g, '')) // remove leading/trailing slashes
+      .map((p) => p.replace(/^\/+|\/+$/g, '')) // remove all leading/trailing slashes
       .filter(Boolean)
       .join('/')
   );
