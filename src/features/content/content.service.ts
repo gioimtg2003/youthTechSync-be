@@ -1,7 +1,6 @@
-import { TeamIdContextRequest } from '@interfaces';
+import { ContextService } from '@common/modules/context';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AsyncLocalStorage } from 'async_hooks';
 import { In, Repository } from 'typeorm';
 import { Content } from './entities/content.entity';
 
@@ -10,25 +9,28 @@ export class ContentService {
   constructor(
     @InjectRepository(Content)
     private readonly contentRepository: Repository<Content>,
-    private readonly als: AsyncLocalStorage<TeamIdContextRequest>,
+    private readonly contextService: ContextService,
   ) {}
 
   async findAll(ids: number[] = []) {
     if (ids?.length > 0) {
       return this.contentRepository.find({
-        where: { id: In(ids), team: { id: this.als.getStore()?.teamId } },
+        where: {
+          id: In(ids),
+          team: { id: this.contextService.getData('tenantId') },
+        },
         select: ['id', 'body', 'metadata'],
       });
     }
     return this.contentRepository.find({
-      where: { team: { id: this.als.getStore()?.teamId } },
+      where: { team: { id: this.contextService.getData('tenantId') } },
       select: ['id', 'body', 'metadata'],
     });
   }
 
   async findById(id: number) {
     return this.contentRepository.findOne({
-      where: { id, team: { id: this.als.getStore()?.teamId } },
+      where: { id, team: { id: this.contextService.getData('tenantId') } },
       relations: ['team'],
     });
   }

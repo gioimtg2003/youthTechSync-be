@@ -1,11 +1,5 @@
-import { AlsModule } from '@common/modules';
-
-import {
-  HEADER_TEAM_ID,
-  SYSTEM_RESOURCE,
-  SystemError,
-  VERSIONING_API,
-} from '@constants';
+import { ContextModule } from '@common/modules/context';
+import { SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
 import { ContentModule } from '@features/content';
 import { ContentAuditModule } from '@features/content-audit';
 import { PolicyModule } from '@features/policy';
@@ -17,9 +11,7 @@ import { Team } from '@features/teams/entities/team.entity';
 import { UserAuthModule } from '@features/user-auth';
 import { UserModule } from '@features/users';
 import { UserTeamModule } from '@features/users/user-team';
-import { TeamIdContextRequest } from '@interfaces';
 import {
-  BadRequestException,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -29,10 +21,10 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
-import { AsyncLocalStorage } from 'async_hooks';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Environment } from './config';
+import { ContextMiddleware, RequestMiddleware } from './middleware';
 
 @Module({
   imports: [
@@ -62,9 +54,9 @@ import { Environment } from './config';
     UserAuthModule,
     PolicyModule,
     UserTeamModule,
-    AlsModule,
     ContentAuditModule,
     ContentModule,
+    ContextModule,
   ],
   controllers: [AppController],
   providers: [
@@ -76,23 +68,11 @@ import { Environment } from './config';
   ],
 })
 export class AppModule implements NestModule {
-  constructor(private readonly als: AsyncLocalStorage<TeamIdContextRequest>) {}
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply((req, _, next) => {
-        console.log('🚀 ~ AppModule ~ configure ~ req:', req);
-        const teamId = req.headers[HEADER_TEAM_ID] as string;
-
-        if (!teamId || isNaN(Number(teamId))) {
-          throw new BadRequestException(SystemError.REQUIRED__HEADER_TEAM_ID);
-        }
-        this.als.run(
-          {
-            teamId: Number(teamId),
-          },
-          () => next(),
-        );
-      })
+      .apply(RequestMiddleware)
+      .forRoutes('*')
+      .apply(ContextMiddleware)
       .exclude(
         {
           path: 'user-auth/(.*)',

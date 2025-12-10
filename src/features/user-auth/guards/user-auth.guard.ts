@@ -1,16 +1,16 @@
+import { ContextService } from '@common/modules/context';
 import { AuthError } from '@constants';
-import { IUserSession, TeamIdContextRequest } from '@interfaces';
+import { IUserSession } from '@interfaces';
 import {
   CanActivate,
   ExecutionContext,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AsyncLocalStorage } from 'async_hooks';
 
 @Injectable()
 export class UserAuthGuard implements CanActivate {
-  constructor(private readonly als: AsyncLocalStorage<TeamIdContextRequest>) {}
+  constructor(private readonly contextService: ContextService) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const userSession = request?.session?.user as IUserSession;
@@ -20,8 +20,8 @@ export class UserAuthGuard implements CanActivate {
     }
 
     // VALIDATE user belong team
-    const store = this.als.getStore();
-    if (store && userSession.teams.indexOf(store.teamId) === -1) {
+    const teamId = this.contextService.getData('tenantId');
+    if (teamId && userSession.teams.indexOf(teamId) === -1) {
       throw new UnauthorizedException(AuthError.AUTH_USER_NOT_IN_TEAM);
     }
 
