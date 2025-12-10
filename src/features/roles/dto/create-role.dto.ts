@@ -2,8 +2,11 @@ import { ActionPermission, SYSTEM_RESOURCE } from '@constants';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
   IsArray,
+  IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Length,
   Validate,
@@ -16,7 +19,9 @@ export class ActionDto {
     enum: ActionPermission,
     example: 'create',
   })
-  @IsString({ message: 'Action must be a string' })
+  @IsEnum(ActionPermission, {
+    message: 'Action must be a valid ActionPermission',
+  })
   @IsNotEmpty({ message: 'Action is required' })
   action: ActionPermission;
 
@@ -25,6 +30,7 @@ export class ActionDto {
     example: [1, 2, 3],
     required: false,
   })
+  @IsOptional()
   @IsArray({ message: 'Scope must be an array of numbers' })
   @Validate((value) => value?.every((item) => typeof item === 'number'), {
     message: 'Scope must be an array of numbers',
@@ -37,7 +43,9 @@ export class PermissionDto {
     description: 'Resource name',
     example: 'project',
   })
-  @IsString({ message: 'Resource must be a string' })
+  @IsEnum(SYSTEM_RESOURCE, {
+    message: 'Resource must be a valid SYSTEM_RESOURCE',
+  })
   @IsNotEmpty({ message: 'Resource is required' })
   resource: SYSTEM_RESOURCE;
 
@@ -45,7 +53,12 @@ export class PermissionDto {
     description: 'List of actions for the resource',
     isArray: true,
   })
-  @ValidateNested({ each: true })
+  @IsArray({ message: 'Actions must be an array' })
+  @ArrayNotEmpty({ message: 'Actions should not be empty' })
+  @ValidateNested({
+    each: true,
+    message: 'Actions must be an array of ActionDto',
+  })
   @Type(() => ActionDto)
   actions: ActionDto[];
 }
@@ -74,6 +87,9 @@ export class CreateRoleDto {
     isArray: true,
   })
   @Type(() => PermissionDto)
-  @ValidateNested({ each: true })
+  @ValidateNested({
+    each: true,
+    message: 'Permissions must be an array of PermissionDto',
+  })
   permissions: PermissionDto[];
 }

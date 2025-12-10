@@ -1,8 +1,11 @@
-import { ActionPermission, SYSTEM_RESOURCE } from '@constants';
+import {
+  ActionPermission,
+  SEPARATOR_POLICY,
+  SYSTEM_RESOURCE,
+} from '@constants';
 
 export const parserPolicy = (policy: string) => {
-  //TODO: fix logic parse policy (SEPARATOR_POLICY is '::')
-  const [action, resource, ids] = policy.split(':') as [
+  const [action, resource, ids] = policy.split(SEPARATOR_POLICY) as [
     ActionPermission,
     SYSTEM_RESOURCE,
     string | undefined,
