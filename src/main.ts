@@ -15,15 +15,14 @@ import { AppModule } from './app.module';
 import { buildConfig } from './config';
 import { genId } from './gen-id';
 import './instrument';
+import { RequestInterceptor } from './interceptor';
 
 const appConfig = buildConfig();
 
 async function bootstrap() {
   const logger = new Logger('bootstrap');
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    snapshot: true,
-  });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const PORT = process.env.PORT || 3000;
   logger.debug(
     `🔥 Application listening on http://localhost:${PORT}/api/v${CURRENT_VERSION_API}`,
@@ -52,6 +51,7 @@ async function bootstrap() {
     prefix: `${CACHE_KEY_SYSTEM.SESSION}:`,
     ttl: appConfig.cookie.maxAge / 1000,
   });
+  app.useGlobalPipes(new ValidationPipe());
 
   app.use(
     session({
@@ -67,12 +67,13 @@ async function bootstrap() {
   app.use(passport.session());
 
   app.set('trust proxy', 1);
-  app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
     origin: appConfig.origin,
     credentials: true,
   });
+
+  app.useGlobalInterceptors(new RequestInterceptor());
 
   if (appConfig.enableSwagger) {
     const config = new DocumentBuilder()

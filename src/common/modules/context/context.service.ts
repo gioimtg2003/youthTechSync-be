@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AsyncLocalStorage } from 'async_hooks';
 
-interface BaseTraceContext {
+export interface BaseTraceContext {
   tenantId: number;
 
   // Additional fields can be added as needed
@@ -36,5 +36,9 @@ export class ContextService<T extends BaseTraceContext = BaseTraceContext> {
     if (!store) return undefined;
 
     return store.get(key) as T[K] | undefined;
+  }
+
+  public getStore(): T | undefined {
+    return this.als.getStore() as unknown as T | undefined;
   }
 }

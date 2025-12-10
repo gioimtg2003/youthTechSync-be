@@ -1,4 +1,4 @@
-import { AlsModule } from '@common/modules';
+import { ContextModule } from '@common/modules/context';
 import { LocatorResourceModule } from '@features/locator-resource';
 import { TeamModule } from '@features/teams';
 import { Module } from '@nestjs/common';
@@ -14,7 +14,7 @@ import { UserTeamService } from './user-team.service';
     AbilityModule,
     LocatorResourceModule,
     TeamModule,
-    AlsModule,
+    ContextModule,
   ],
   controllers: [UserTeamController],
   exports: [UserTeamService],

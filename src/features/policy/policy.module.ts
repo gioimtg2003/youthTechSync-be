@@ -1,4 +1,4 @@
-import { AlsModule } from '@common/modules';
+import { ContextModule } from '@common/modules/context';
 import { ContentModule } from '@features/content';
 import { RoleModule } from '@features/roles';
 import { UserTeamModule } from '@features/users/user-team';
@@ -13,9 +13,9 @@ import { PolicyService } from './policy.service';
   imports: [
     AbilityModule,
     UserTeamModule,
-    AlsModule,
     RoleModule,
     ContentModule,
+    ContextModule,
   ],
   controllers: [PolicyController, PolicyResourcesController],
   providers: [PolicyService, PolicyResourcesService],
