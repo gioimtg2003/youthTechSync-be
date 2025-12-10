@@ -6,9 +6,9 @@ import {
   SystemError,
   VERSIONING_API,
 } from '@constants';
+import { ContentModule } from '@features/content';
+import { ContentAuditModule } from '@features/content-audit';
 import { PolicyModule } from '@features/policy';
-import { PostAuditModule } from '@features/post-audits';
-import { PostModule } from '@features/posts';
 import { RedisModule } from '@features/redis';
 import { ResourceModule } from '@features/resources';
 import { RoleModule } from '@features/roles';
@@ -56,8 +56,6 @@ import { Environment } from './config';
     SentryModule.forRoot(),
     RedisModule,
     ResourceModule,
-    PostAuditModule,
-    PostModule,
     RoleModule,
     TeamModule,
     UserModule,
@@ -65,6 +63,8 @@ import { Environment } from './config';
     PolicyModule,
     UserTeamModule,
     AlsModule,
+    ContentAuditModule,
+    ContentModule,
   ],
   controllers: [AppController],
   providers: [
@@ -80,6 +80,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply((req, _, next) => {
+        console.log('🚀 ~ AppModule ~ configure ~ req:', req);
         const teamId = req.headers[HEADER_TEAM_ID] as string;
 
         if (!teamId || isNaN(Number(teamId))) {

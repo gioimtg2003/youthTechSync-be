@@ -1,5 +1,6 @@
 import { BaseEntity } from '@common/entities/base.entity';
 import { DATABASE_TABLES, ResourceType, SYSTEM_RESOURCE } from '@constants';
+import { Content } from '@features/content/entities/content.entity';
 import { Team } from '@features/teams/entities/team.entity';
 import { Column, Entity, Index, ManyToOne, OneToMany, Relation } from 'typeorm';
 
@@ -25,6 +26,9 @@ export class Resource extends BaseEntity {
 
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
+
+  @OneToMany(() => Content, (content) => content.resource)
+  contents: Relation<Content>[];
 
   @ManyToOne(() => Resource)
   parent?: Relation<Resource>;

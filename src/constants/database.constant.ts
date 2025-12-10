@@ -8,8 +8,8 @@ export const DATABASE_TABLES = {
   TEAM_USERS: 'team_users',
   RESOURCES: 'resources',
   RESOURCE_PERMISSIONS: 'resource_permissions',
-  POSTS: 'posts',
-  POST_AUDITS: 'post_audits',
+  CONTENT: 'contents',
+  CONTENT_AUDITS: 'content_audits',
 };
 
 export enum UserPlan {
@@ -28,10 +28,11 @@ export enum ResourceType {
   BLOG = 1,
   EVENT = 2,
   DOCUMENT = 3,
-  OTHER = 4,
+  MEDIA = 4,
+  LANDING_PAGE = 5,
 }
 
-export enum PostAuditAction {
+export enum ContentAuditAction {
   created = 'created',
   edited = 'edited',
   deleted = 'deleted',
@@ -52,7 +53,7 @@ export enum SYSTEM_RESOURCE {
   role = 'role',
   user = 'user',
   team = 'team',
-  post = 'post',
+  content = 'content',
   resource = 'resource',
   policy = 'policy',
   settings = 'settings',
