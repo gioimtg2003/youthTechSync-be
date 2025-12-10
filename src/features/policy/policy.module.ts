@@ -1,5 +1,6 @@
 import { ContextModule } from '@common/modules/context';
 import { ContentModule } from '@features/content';
+import { ResourceModule } from '@features/resources';
 import { RoleModule } from '@features/roles';
 import { UserTeamModule } from '@features/users/user-team';
 import { Module } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { PolicyService } from './policy.service';
     RoleModule,
     ContentModule,
     ContextModule,
+    ResourceModule,
   ],
   controllers: [PolicyController, PolicyResourcesController],
   providers: [PolicyService, PolicyResourcesService],

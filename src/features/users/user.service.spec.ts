@@ -16,7 +16,6 @@ describe('User service', () => {
   const mockCryptoService = {
     hash: jest.fn(),
     comparePassword: jest.fn(),
-    // thêm các hàm khác nếu UserService có dùng
   };
 
   beforeEach(async () => {
@@ -25,8 +24,8 @@ describe('User service', () => {
       providers: [
         UserService,
         {
-          provide: getRepositoryToken(User), // Khi UserService xin UserRepository
-          useValue: mockUserRepository, // Thì đưa cho nó cái object giả này
+          provide: getRepositoryToken(User),
+          useValue: mockUserRepository,
         },
         {
           provide: CryptoService,

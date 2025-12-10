@@ -1,3 +1,4 @@
+import { ContextService } from '@common/modules/context';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
@@ -9,17 +10,36 @@ export class ResourceService {
   constructor(
     @InjectRepository(Resource)
     private resourceRepository: Repository<Resource>,
+    private readonly contextService: ContextService,
   ) {}
 
-  get(teamId: number, ids: number[] = []) {
+  get(_: number, ids: number[] = []) {
+    const teamIdFromContext = this.contextService.getData('tenantId');
     if (ids.length === 0) {
       return this.resourceRepository.find({
-        where: { team: { id: teamId } },
+        where: { team: { id: teamIdFromContext } },
       });
     }
     return this.resourceRepository.findBy({
       id: In(ids),
-      team: { id: teamId },
+      team: { id: teamIdFromContext },
+    });
+  }
+
+  findAll(ids: number[] = [], selectFields: (keyof Resource)[] = []) {
+    if (ids.length === 0) {
+      return this.resourceRepository.find({
+        where: { team: { id: this.contextService.getData('tenantId') } },
+        select: ['id', 'name', ...selectFields],
+      });
+    }
+
+    return this.resourceRepository.find({
+      where: {
+        id: In(ids),
+        team: { id: this.contextService.getData('tenantId') },
+      },
+      select: ['id', 'name', ...selectFields],
     });
   }
 

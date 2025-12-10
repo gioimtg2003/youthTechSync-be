@@ -49,4 +49,13 @@ export class PolicyResourcesController {
   getPosts(@PolicyIds(SYSTEM_RESOURCE['content']) resourceIds: number[]) {
     return this.policyService.getAllPosts(resourceIds);
   }
+
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.read, 'resource');
+  })
+  @Get('/resource')
+  @HttpCode(HttpStatus.OK)
+  getResources(@PolicyIds(SYSTEM_RESOURCE['resource']) resourceIds: number[]) {
+    return this.policyService.getAllResources(resourceIds);
+  }
 }
