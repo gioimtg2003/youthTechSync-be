@@ -5,6 +5,7 @@ import { RoleService } from '@features/roles';
 import { UserTeamService } from '@features/users/user-team';
 import { Injectable, Logger } from '@nestjs/common';
 
+// TODO: Add pagination
 @Injectable()
 export class PolicyResourcesService {
   private readonly logger = new Logger(PolicyResourcesService.name);
