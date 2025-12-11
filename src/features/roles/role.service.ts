@@ -148,4 +148,38 @@ export class RoleService {
     );
     return result.affected > 0;
   }
+
+  async migrateRole(roleId: number, toTeamId: number, type: 'copy' | 'move') {
+    const result = await this.roleRepository.update(
+      {
+        id: roleId,
+        team: { id: this.contextService.getData('tenantId') },
+      },
+      {
+        team: { id: toTeamId },
+      },
+    );
+
+    if (type === 'copy' && result.affected > 0) {
+      const role = await this.roleRepository.findOne({
+        where: {
+          id: roleId,
+          team: { id: this.contextService.getData('tenantId') },
+        },
+      });
+      const { description, name, permission } = role ?? {};
+
+      if (role) {
+        const newRole = this.roleRepository.create({
+          description,
+          name,
+          permission,
+          id: undefined,
+          team: { id: toTeamId },
+        });
+        await this.roleRepository.save(newRole);
+      }
+    }
+    return result.affected > 0;
+  }
 }

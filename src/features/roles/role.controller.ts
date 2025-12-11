@@ -5,6 +5,7 @@ import { UserAuthGuard } from '@features/user-auth/guards';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -14,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { PolicyIds } from 'src/decorators/policy-ids.decorator';
-import { CreateRoleDto } from './dto';
+import { CreateRoleDto, MigrateRoleDto } from './dto';
 import { RoleService } from './role.service';
 
 @ApiTags('Role')
@@ -64,5 +65,32 @@ export class RoleController {
     @Body() data: CreateRoleDto,
   ) {
     return this.roleService.update(id, data);
+  }
+
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.delete, SYSTEM_RESOURCE.role);
+  })
+  @Delete('/:id')
+  @ApiOkResponse({ type: Boolean })
+  deleteRole(@Param('id', ParseIntPipe) id: number) {
+    return this.roleService.delete(id);
+  }
+
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.update, SYSTEM_RESOURCE.role);
+  })
+  @Post('/copy')
+  @ApiOkResponse({ type: Boolean })
+  copyRole(@Body() data: MigrateRoleDto) {
+    return this.roleService.migrateRole(data.id, data.toTeamId, 'copy');
+  }
+
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.update, SYSTEM_RESOURCE.role);
+  })
+  @Post('/move')
+  @ApiOkResponse({ type: Boolean })
+  moveRole(@Body() data: MigrateRoleDto) {
+    return this.roleService.migrateRole(data.id, data.toTeamId, 'move');
   }
 }
