@@ -149,6 +149,7 @@ export class RoleService {
     return result.affected > 0;
   }
 
+  //TODO: improve logic for copy role with scope permissions
   async migrateRole(roleId: number, toTeamId: number, type: 'copy' | 'move') {
     const result = await this.roleRepository.update(
       {
