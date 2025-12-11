@@ -8,7 +8,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { parserPolicy } from '@utils';
-import { groupBy } from 'lodash';
+import { groupBy, omit } from 'lodash';
 import { In, Repository } from 'typeorm';
 import { CreateRoleDto, PermissionDto } from './dto';
 import { Role } from './entities/role.entity';
@@ -105,7 +105,7 @@ export class RoleService {
 
     return roles?.map((role) => ({
       ...role,
-      permission: this.parsePermissions(role?.permission ?? []),
+      permissions: this.parsePermissions(role?.permission ?? []),
     }));
   }
 
@@ -120,7 +120,7 @@ export class RoleService {
 
     const formattedPermissions = this.parsePermissions(role?.permission ?? []);
 
-    return { ...role, permission: formattedPermissions };
+    return { ...omit(role, 'permission'), permissions: formattedPermissions };
   }
 
   async delete(id: number) {
