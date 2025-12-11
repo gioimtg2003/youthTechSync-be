@@ -1,9 +1,11 @@
 import { ContextService } from '@common/modules/context';
 import { ContentService } from '@features/content';
+import { ResourceService } from '@features/resources';
 import { RoleService } from '@features/roles';
 import { UserTeamService } from '@features/users/user-team';
 import { Injectable, Logger } from '@nestjs/common';
 
+// TODO: Add pagination
 @Injectable()
 export class PolicyResourcesService {
   private readonly logger = new Logger(PolicyResourcesService.name);
@@ -12,6 +14,7 @@ export class PolicyResourcesService {
     private readonly roleService: RoleService,
     private readonly contentService: ContentService,
     private readonly contextService: ContextService,
+    private readonly resourceService: ResourceService,
   ) {}
 
   async getAllUsersInTeam(ids: number[] = []) {
@@ -33,5 +36,12 @@ export class PolicyResourcesService {
       `Getting all posts in team ${this.contextService.getData('tenantId')}`,
     );
     return this.contentService.findAll(ids);
+  }
+
+  async getAllResources(ids: number[] = []) {
+    this.logger.log(
+      `Getting all resources in team ${this.contextService.getData('tenantId')}`,
+    );
+    return this.resourceService.findAll(ids);
   }
 }

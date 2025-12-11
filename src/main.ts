@@ -15,7 +15,6 @@ import { AppModule } from './app.module';
 import { buildConfig } from './config';
 import { genId } from './gen-id';
 import './instrument';
-import { RequestInterceptor } from './interceptor';
 
 const appConfig = buildConfig();
 
@@ -72,8 +71,6 @@ async function bootstrap() {
     origin: appConfig.origin,
     credentials: true,
   });
-
-  app.useGlobalInterceptors(new RequestInterceptor());
 
   if (appConfig.enableSwagger) {
     const config = new DocumentBuilder()
