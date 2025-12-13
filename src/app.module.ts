@@ -99,6 +99,11 @@ export class AppModule implements NestModule {
           method: RequestMethod.GET,
           version: VERSIONING_API.v1,
         },
+        {
+          path: 'app/(.*)',
+          method: RequestMethod.ALL,
+          version: VERSIONING_API.v1,
+        },
       )
       .forRoutes('*');
   }

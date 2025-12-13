@@ -18,6 +18,23 @@ export class AppService implements OnModuleInit {
       });
     }
   }
+
+  async addRootAccount(username: string, email: string, password: string) {
+    const found = await this.userService.findByUsernameOrEmail(username, [
+      'id',
+    ]);
+
+    if (!found) {
+      await this.userService.create({
+        username,
+        email,
+        password,
+      });
+
+      return true;
+    }
+    return null;
+  }
   getHello(): string {
     return 'Hello World!';
   }

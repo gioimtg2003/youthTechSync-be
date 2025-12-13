@@ -79,7 +79,7 @@ export class CreateRoleDto {
     required: false,
   })
   @IsString({ message: 'Description must be a string' })
-  @IsNotEmpty({ message: 'Description is required' })
+  @IsOptional()
   description?: string;
 
   @ApiProperty({
