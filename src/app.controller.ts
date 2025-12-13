@@ -9,7 +9,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
+import type { Request } from 'express';
 import { AppService } from './app.service';
 
 @ApiTags('App')
