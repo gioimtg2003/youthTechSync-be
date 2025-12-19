@@ -158,8 +158,11 @@ export class TeamService {
       throw new NotFoundException(UserError.USER_NOT_FOUND);
     }
 
-    // Generate unique token
-    const token = this.cryptoService.generateToken() + Date.now().toString(36);
+    // Generate unique token - using crypto random bytes with timestamp for uniqueness
+    // The crypto service generates a secure random token, timestamp ensures uniqueness
+    const token =
+      this.cryptoService.generateToken() +
+      this.cryptoService.hash256(Date.now().toString()).substring(0, 8);
 
     // Set expiration to 7 days from now
     const expiresAt = new Date();
@@ -180,7 +183,11 @@ export class TeamService {
     }
 
     // Generate invite link
-    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const baseUrl = process.env.FRONTEND_URL;
+    if (!baseUrl) {
+      this.logger.error('FRONTEND_URL environment variable is not set');
+      throw new Error('FRONTEND_URL must be configured');
+    }
     const inviteLink = `${baseUrl}/invites/${token}`;
 
     // Send email if email is provided

@@ -1,7 +1,5 @@
 import { MailService } from '@common/services/mail';
-import { TeamError, UserError } from '@constants';
 import { CryptoService } from '@features/crypto';
-import { User } from '@features/users/entities/user.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -31,6 +29,7 @@ describe('TeamService - Invite functionality', () => {
 
   const mockCryptoService = {
     generateToken: jest.fn(),
+    hash256: jest.fn(),
   };
 
   const mockMailService = {
@@ -45,6 +44,9 @@ describe('TeamService - Invite functionality', () => {
   };
 
   beforeEach(async () => {
+    // Set required environment variables for tests
+    process.env.FRONTEND_URL = 'http://localhost:3000';
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TeamService,
@@ -101,6 +103,7 @@ describe('TeamService - Invite functionality', () => {
       mockTeamRepository.findOne.mockResolvedValue(mockTeam);
       mockDataSource.manager.findOne.mockResolvedValue(mockUser);
       mockCryptoService.generateToken.mockReturnValue('test-token');
+      mockCryptoService.hash256.mockReturnValue('abcdef1234567890');
       mockTeamInviteRepository.create.mockReturnValue({
         token,
         teamId,
@@ -124,9 +127,9 @@ describe('TeamService - Invite functionality', () => {
     it('should throw NotFoundException when team not found', async () => {
       mockTeamRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.createInvite(1, 1, 'test@example.com')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.createInvite(1, 1, 'test@example.com'),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw NotFoundException when user not found', async () => {
@@ -134,9 +137,9 @@ describe('TeamService - Invite functionality', () => {
       mockTeamRepository.findOne.mockResolvedValue(mockTeam);
       mockDataSource.manager.findOne.mockResolvedValue(null);
 
-      await expect(service.createInvite(1, 1, 'test@example.com')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.createInvite(1, 1, 'test@example.com'),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should not send email when email is not provided', async () => {
@@ -149,6 +152,7 @@ describe('TeamService - Invite functionality', () => {
       mockTeamRepository.findOne.mockResolvedValue(mockTeam);
       mockDataSource.manager.findOne.mockResolvedValue(mockUser);
       mockCryptoService.generateToken.mockReturnValue('test-token');
+      mockCryptoService.hash256.mockReturnValue('abcdef1234567890');
       mockTeamInviteRepository.create.mockReturnValue({
         token: 'test-token',
         teamId,

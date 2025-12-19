@@ -1,7 +1,10 @@
 import { VERSIONING_API } from '@constants';
+import { CurrentUser } from '@decorators';
 import { CryptoService } from '@features/crypto';
+import { UserAuthGuard } from '@features/user-auth/guards';
 import { UserAuthService } from '@features/user-auth/user-auth.service';
 import { UserTeamService } from '@features/users/user-team/user-team.service';
+import { IUserSession } from '@interfaces';
 import {
   Body,
   Controller,
@@ -12,6 +15,7 @@ import {
   Post,
   Req,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AcceptInviteDto } from './dto';
@@ -55,15 +59,18 @@ export class TeamInviteController {
   @ApiOperation({
     summary: 'Accept invite (for logged-in users)',
   })
+  @UseGuards(UserAuthGuard)
   @Post(':token/accept')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     description: 'Invite accepted successfully',
   })
-  async acceptInvite(@Param('token') token: string, @Req() req: any) {
+  async acceptInvite(
+    @Param('token') token: string,
+    @CurrentUser() user: IUserSession,
+  ) {
     const invite = await this.teamService.getInviteByToken(token);
 
-    const user = req.session?.user;
     if (!user) {
       throw new UnauthorizedException(
         'User must be logged in to accept invite',

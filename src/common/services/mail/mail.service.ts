@@ -14,9 +14,16 @@ export class MailService {
   private transporter: nodemailer.Transporter;
 
   constructor() {
+    // Validate required environment variables
+    if (!process.env.MAIL_USER || !process.env.MAIL_PASSWORD) {
+      throw new Error(
+        'MAIL_USER and MAIL_PASSWORD environment variables are required',
+      );
+    }
+
     this.transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.MAIL_PORT || '587', 10),
+      host: process.env.MAIL_HOST,
+      port: parseInt(process.env.MAIL_PORT, 10),
       secure: process.env.MAIL_SECURE === 'true',
       auth: {
         user: process.env.MAIL_USER,
