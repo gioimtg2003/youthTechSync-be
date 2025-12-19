@@ -1,4 +1,4 @@
-import { EmailRegex, UserError } from '@constants';
+import { UserError } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,12 +27,8 @@ export class UserService {
     select?: (keyof User)[],
     relations?: string[],
   ) {
-    const condition = EmailRegex.test(input)
-      ? { email: input }
-      : { username: input };
-
     const user = await this.userRepository.findOne({
-      where: condition,
+      where: { email: input },
       select,
       relations,
     });

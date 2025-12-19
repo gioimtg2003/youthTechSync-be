@@ -16,9 +16,9 @@ import {
 export class User extends BaseEntity {
   static readonly modelName = 'user';
 
-  @Index({ unique: true })
-  @Column({ type: 'varchar', length: 100, unique: true })
-  username: string;
+  // @Index({ unique: true })
+  // @Column({ type: 'varchar', length: 100, unique: true })
+  // username: string;
 
   @Index({ unique: true })
   @Column({ type: 'varchar', length: 100, unique: true })

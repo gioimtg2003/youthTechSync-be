@@ -15,16 +15,13 @@ export class UserAuthService {
   ) {}
 
   async register(userData: Partial<User>) {
-    const { password, username, email } = userData;
+    const { password, email } = userData;
 
-    const found = await this.userService.findByUsernameOrEmail(username, [
-      'id',
-    ]);
+    const found = await this.userService.findByUsernameOrEmail(email, ['id']);
 
     if (found) throw new BadRequestException(UserError.USER_ALREADY_EXISTS);
 
     const user = await this.userService.create({
-      username,
       email,
       password,
     });
@@ -36,13 +33,13 @@ export class UserAuthService {
     return true;
   }
 
-  async validate(username: string, password: string) {
+  async validate(email: string, password: string) {
     const user = await this.userService.findByUsernameOrEmail(
-      username,
+      email,
       [],
       ['roles', 'teams'],
     );
-    this.logger.log(`Validating user: ${username}`);
+    this.logger.log(`Validating user: ${email}`);
 
     if (!user) return null;
 
@@ -58,7 +55,7 @@ export class UserAuthService {
   createUserSession(user: User) {
     const userSession: IUserSession = {
       id: user.id,
-      username: user.username,
+      // username: user.username,
       email: user.email,
       plan: user.plan,
       roles: user.roles?.map((role) => role.name) || [],

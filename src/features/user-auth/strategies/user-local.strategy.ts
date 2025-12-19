@@ -10,14 +10,14 @@ export class UserLocalStrategy extends PassportStrategy(
 ) {
   private readonly logger = new Logger(UserLocalStrategy.name);
   constructor(private userAuthService: UserAuthService) {
-    super({ usernameField: 'username', passwordField: 'password' });
+    super({ usernameField: 'email', passwordField: 'password' });
   }
 
-  async validate(username: string, password: string) {
-    const user = await this.userAuthService.validate(username, password);
+  async validate(email: string, password: string) {
+    const user = await this.userAuthService.validate(email, password);
 
     if (!user) {
-      this.logger.warn(`Invalid credentials for user: ${username}`);
+      this.logger.warn(`Invalid credentials for user: ${email}`);
       throw new UnauthorizedException(AuthError.AUTH_INVALID_CREDENTIALS);
     }
 

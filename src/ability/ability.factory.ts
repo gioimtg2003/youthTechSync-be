@@ -35,7 +35,7 @@ export class AbilityFactory {
   definePoliciesForUser(user: IUserSession) {
     const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
-    if (user?.username === process.env.ROOT_USER_NAME) {
+    if (user?.email === process.env.ROOT_USER_EMAIL) {
       can(ActionPermission.manage, SYSTEM_RESOURCE.all);
     } else {
       user?.permissions?.forEach((permission) => {
