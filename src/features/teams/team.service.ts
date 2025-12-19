@@ -1,6 +1,9 @@
+import { MailService } from '@common/services/mail';
 import { LIMIT_PLAN_CREATE_TEAM, TeamError, UserError } from '@constants';
+import { CryptoService } from '@features/crypto';
 import { User } from '@features/users/entities/user.entity';
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   Logger,
@@ -9,6 +12,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, FindOneOptions, Repository } from 'typeorm';
 import { CreateTeamDto } from './dto';
+import { TeamInvite } from './entities/team-invite.entity';
 import { Team } from './entities/team.entity';
 
 @Injectable()
@@ -17,8 +21,17 @@ export class TeamService {
 
   constructor(
     @InjectRepository(Team) private readonly teamRepository: Repository<Team>,
+    @InjectRepository(TeamInvite)
+    private readonly teamInviteRepository: Repository<TeamInvite>,
     private readonly dataSource: DataSource,
-  ) {}
+    private readonly cryptoService: CryptoService,
+    private readonly mailService: MailService,
+  ) {
+    // Validate required environment variables at startup
+    if (!process.env.FRONTEND_URL) {
+      throw new Error('FRONTEND_URL environment variable is required');
+    }
+  }
 
   async findById(
     id: number,
@@ -116,5 +129,112 @@ export class TeamService {
       select: ['id', 'name', 'alias', 'logoUrl', 'settings'],
     });
     return teams;
+  }
+
+  async findByAlias(alias: string) {
+    const team = await this.teamRepository.findOne({
+      where: { alias },
+      select: ['id', 'name', 'alias'],
+    });
+    return team;
+  }
+
+  /**
+   * Create an invite link for a team
+   */
+  async createInvite(
+    teamId: number,
+    userId: number,
+    email?: string,
+  ): Promise<string> {
+    this.logger.log(`Creating invite for team ${teamId} by user ${userId}`);
+
+    const team = await this.findById(teamId, ['id', 'name']);
+    if (!team) {
+      throw new NotFoundException(TeamError.TEAM_NOT_FOUND);
+    }
+
+    const user = await this.dataSource.manager.findOne(User, {
+      where: { id: userId },
+      select: ['id', 'email'],
+    });
+
+    if (!user) {
+      throw new NotFoundException(UserError.USER_NOT_FOUND);
+    }
+
+    // Generate unique token using only cryptographically secure random data
+    const token =
+      this.cryptoService.generateToken() + this.cryptoService.generateToken();
+
+    // Set expiration to 7 days from now
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    const invite = this.teamInviteRepository.create({
+      token,
+      teamId,
+      invitedBy: userId,
+      email,
+      expiresAt,
+    });
+
+    const saved = await this.teamInviteRepository.save(invite);
+
+    if (!saved) {
+      throw new BadRequestException(TeamError.INVITE_CREATION_FAILED);
+    }
+
+    // Generate invite link
+    const baseUrl = process.env.FRONTEND_URL;
+    const inviteLink = `${baseUrl}/invites/${token}`;
+
+    // Send email if email is provided
+    if (email) {
+      await this.mailService.sendInviteEmail(
+        email,
+        user.email,
+        team.name,
+        inviteLink,
+      );
+    }
+
+    return inviteLink;
+  }
+
+  /**
+   * Validate and get invite by token
+   */
+  async getInviteByToken(token: string): Promise<TeamInvite> {
+    const invite = await this.teamInviteRepository.findOne({
+      where: { token },
+      relations: ['team', 'inviter'],
+    });
+
+    if (!invite) {
+      throw new NotFoundException(TeamError.INVITE_TOKEN_NOT_FOUND);
+    }
+
+    if (invite.usedAt) {
+      throw new BadRequestException(TeamError.INVITE_TOKEN_ALREADY_USED);
+    }
+
+    if (new Date() > invite.expiresAt) {
+      throw new BadRequestException(TeamError.INVITE_TOKEN_EXPIRED);
+    }
+
+    return invite;
+  }
+
+  /**
+   * Mark invite as used
+   */
+  async markInviteAsUsed(token: string): Promise<boolean> {
+    const result = await this.teamInviteRepository.update(
+      { token },
+      { usedAt: new Date() },
+    );
+
+    return result.affected > 0;
   }
 }

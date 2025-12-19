@@ -10,6 +10,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -21,7 +22,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateTeamDto } from './dto';
+import { CreateInviteDto, CreateTeamDto } from './dto';
 import { TeamService } from './team.service';
 
 @ApiTags('Team')
@@ -68,5 +69,28 @@ export class TeamController {
   @ApiOkResponse({ description: 'Team updated successfully', type: Boolean })
   update(@Param('id') id: number, @CurrentUser() user: IUserSession) {
     return user;
+  }
+
+  @ApiOperation({ summary: 'Create invite link for team' })
+  @UseGuards(LocatorResourceGuard(SYSTEM_RESOURCE.team), PermissionGuard)
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.manage, SYSTEM_RESOURCE.team);
+  })
+  @Post(':teamAlias/invite')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({
+    description: 'Invite link created successfully',
+    type: String,
+  })
+  async createInvite(
+    @Param('teamAlias') teamAlias: string,
+    @Body() input: CreateInviteDto,
+    @CurrentUser() user: IUserSession,
+  ) {
+    const team = await this.teamService.findByAlias(teamAlias);
+    if (!team) {
+      throw new NotFoundException('Team not found');
+    }
+    return this.teamService.createInvite(team.id, user?.id, input.email);
   }
 }
