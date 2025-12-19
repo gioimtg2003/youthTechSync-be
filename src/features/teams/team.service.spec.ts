@@ -29,7 +29,6 @@ describe('TeamService - Invite functionality', () => {
 
   const mockCryptoService = {
     generateToken: jest.fn(),
-    hash256: jest.fn(),
   };
 
   const mockMailService = {
@@ -103,7 +102,6 @@ describe('TeamService - Invite functionality', () => {
       mockTeamRepository.findOne.mockResolvedValue(mockTeam);
       mockDataSource.manager.findOne.mockResolvedValue(mockUser);
       mockCryptoService.generateToken.mockReturnValue('test-token');
-      mockCryptoService.hash256.mockReturnValue('abcdef1234567890');
       mockTeamInviteRepository.create.mockReturnValue({
         token,
         teamId,
@@ -152,7 +150,6 @@ describe('TeamService - Invite functionality', () => {
       mockTeamRepository.findOne.mockResolvedValue(mockTeam);
       mockDataSource.manager.findOne.mockResolvedValue(mockUser);
       mockCryptoService.generateToken.mockReturnValue('test-token');
-      mockCryptoService.hash256.mockReturnValue('abcdef1234567890');
       mockTeamInviteRepository.create.mockReturnValue({
         token: 'test-token',
         teamId,

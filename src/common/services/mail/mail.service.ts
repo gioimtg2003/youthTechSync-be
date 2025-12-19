@@ -21,9 +21,20 @@ export class MailService {
       );
     }
 
+    if (!process.env.MAIL_HOST || !process.env.MAIL_PORT) {
+      throw new Error(
+        'MAIL_HOST and MAIL_PORT environment variables are required',
+      );
+    }
+
+    const port = parseInt(process.env.MAIL_PORT, 10);
+    if (isNaN(port)) {
+      throw new Error('MAIL_PORT must be a valid number');
+    }
+
     this.transporter = nodemailer.createTransport({
       host: process.env.MAIL_HOST,
-      port: parseInt(process.env.MAIL_PORT, 10),
+      port,
       secure: process.env.MAIL_SECURE === 'true',
       auth: {
         user: process.env.MAIL_USER,

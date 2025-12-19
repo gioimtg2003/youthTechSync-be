@@ -26,7 +26,12 @@ export class TeamService {
     private readonly dataSource: DataSource,
     private readonly cryptoService: CryptoService,
     private readonly mailService: MailService,
-  ) {}
+  ) {
+    // Validate required environment variables at startup
+    if (!process.env.FRONTEND_URL) {
+      throw new Error('FRONTEND_URL environment variable is required');
+    }
+  }
 
   async findById(
     id: number,
@@ -158,11 +163,9 @@ export class TeamService {
       throw new NotFoundException(UserError.USER_NOT_FOUND);
     }
 
-    // Generate unique token - using crypto random bytes with timestamp for uniqueness
-    // The crypto service generates a secure random token, timestamp ensures uniqueness
+    // Generate unique token using only cryptographically secure random data
     const token =
-      this.cryptoService.generateToken() +
-      this.cryptoService.hash256(Date.now().toString()).substring(0, 8);
+      this.cryptoService.generateToken() + this.cryptoService.generateToken();
 
     // Set expiration to 7 days from now
     const expiresAt = new Date();
@@ -184,10 +187,6 @@ export class TeamService {
 
     // Generate invite link
     const baseUrl = process.env.FRONTEND_URL;
-    if (!baseUrl) {
-      this.logger.error('FRONTEND_URL environment variable is not set');
-      throw new Error('FRONTEND_URL must be configured');
-    }
     const inviteLink = `${baseUrl}/invites/${token}`;
 
     // Send email if email is provided

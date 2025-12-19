@@ -71,12 +71,6 @@ export class TeamInviteController {
   ) {
     const invite = await this.teamService.getInviteByToken(token);
 
-    if (!user) {
-      throw new UnauthorizedException(
-        'User must be logged in to accept invite',
-      );
-    }
-
     // Add user to team (checks if already in team internally)
     await this.userTeamService.addUserToTeamById(user.id, invite.teamId);
 
