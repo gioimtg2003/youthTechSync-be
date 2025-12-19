@@ -31,13 +31,13 @@ export class UserTeamService {
           id: In(ids),
           teams: { id: this.contextService.getData('tenantId') },
         },
-        select: ['id', 'username', 'email'],
+        select: ['id', 'email'],
       });
     }
 
     const users = await this.userRepository.find({
       where: { teams: { id: this.contextService.getData('tenantId') } },
-      select: ['id', 'username', 'email'],
+      select: ['id', 'email'],
     });
 
     return users;
@@ -142,6 +142,7 @@ export class UserTeamService {
     )
       throw new ForbiddenException(UserError.USER_CANNOT_JOIN_TEAM);
 
+    //TODO: check logic maximum team join based on plan
     const countTeams = user?.teams?.length ?? 0;
     const maxTeamJoin = LIMIT_PLAN_CREATE_TEAM[user.plan] ?? 0;
 
@@ -164,7 +165,7 @@ export class UserTeamService {
   }
 
   async createUserToTeam(userId: number, user: Partial<User>) {
-    const { username, email } = user;
+    const { email } = user;
     this.logger.log(
       `Creating user ${user.email} to team ${this.contextService.getData('tenantId')}`,
     );
@@ -195,7 +196,6 @@ export class UserTeamService {
     }
 
     const newUser = this.userRepository.create({
-      username,
       email,
       password: '', // set empty password, user can set password later
       teams: [{ id: this.contextService.getData('tenantId') }],

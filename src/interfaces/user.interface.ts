@@ -6,7 +6,6 @@ import { UserPlan } from '@constants';
 export interface IUserSession {
   id: number;
   plan: UserPlan;
-  username: string;
   email: string;
 
   isAdmin?: boolean;

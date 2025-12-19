@@ -1,19 +1,8 @@
-import { EmailRegex, UsernameRegex } from '@constants';
+import { EmailRegex } from '@constants';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class UserRegisterDto {
-  @ApiProperty({ example: 'user1' })
-  @IsString()
-  @Matches(UsernameRegex)
-  @MinLength(4, {
-    message: 'Username must be at least 4 characters long',
-  })
-  @MaxLength(20, {
-    message: 'Username must be at most 20 characters long',
-  })
-  username: string;
-
   @ApiProperty({ example: 'user1' })
   @IsString()
   @Matches(EmailRegex)
