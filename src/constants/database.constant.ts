@@ -10,6 +10,7 @@ export const DATABASE_TABLES = {
   RESOURCE_PERMISSIONS: 'resource_permissions',
   CONTENT: 'contents',
   CONTENT_AUDITS: 'content_audits',
+  USER_INVITES: 'user_invites',
 };
 
 export enum UserPlan {
