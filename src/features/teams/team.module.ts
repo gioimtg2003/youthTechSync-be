@@ -1,3 +1,4 @@
+import { ContextModule } from '@common/modules/context';
 import { LocatorResourceModule } from '@features/locator-resource';
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,6 +12,7 @@ import { TeamService } from './team.service';
     TypeOrmModule.forFeature([Team]),
     AbilityModule,
     forwardRef(() => LocatorResourceModule),
+    ContextModule,
   ],
   controllers: [TeamController],
   providers: [TeamService],
