@@ -16,3 +16,10 @@ export const DEFAULT_ID = -1;
 export const SEPARATOR_POLICY = '::';
 
 export const HEADER_TEAM_ID = 'x-team-id';
+
+export const USER_EMAIL = {
+  NO_REPLY: 'no-reply',
+  SUPPORT: 'support',
+  SYSTEM: 'system',
+  ADMIN: 'admin',
+};

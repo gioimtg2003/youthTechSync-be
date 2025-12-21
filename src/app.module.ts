@@ -1,3 +1,4 @@
+import { MailModule } from '@common/modules';
 import { ContextModule } from '@common/modules/context';
 import { SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
 import { ContentModule } from '@features/content';
@@ -9,8 +10,10 @@ import { RoleModule } from '@features/roles';
 import { TeamModule } from '@features/teams';
 import { Team } from '@features/teams/entities/team.entity';
 import { UserAuthModule } from '@features/user-auth';
-import { UserModule } from '@features/users';
+import { UserInviteModule, UserModule } from '@features/users';
 import { UserTeamModule } from '@features/users/user-team';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import {
   MiddlewareConsumer,
   Module,
@@ -21,6 +24,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Environment } from './config';
@@ -46,6 +50,27 @@ import { ContextMiddleware, RequestMiddleware } from './middleware';
     }),
     TypeOrmModule.forFeature([Team]),
     SentryModule.forRoot(),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT || '587', 10),
+        secure: true,
+        tls: {
+          rejectUnauthorized: false,
+        },
+        auth: {
+          user: process.env.MAIL_USERNAME,
+          pass: process.env.MAIL_PASSWORD,
+        },
+      },
+      template: {
+        dir: join(__dirname, 'common/modules/mail/templates'),
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
     RedisModule,
     ResourceModule,
     RoleModule,
@@ -57,6 +82,8 @@ import { ContextMiddleware, RequestMiddleware } from './middleware';
     ContentAuditModule,
     ContentModule,
     ContextModule,
+    MailModule,
+    UserInviteModule,
   ],
   controllers: [AppController],
   providers: [
