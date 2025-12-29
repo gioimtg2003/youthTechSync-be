@@ -13,6 +13,7 @@ import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserInvite } from '../entities/user-invite.entity';
+import { UserJoinRequest } from '../entities/user-join-request.entity';
 import { UserTeamService } from '../user-team';
 import { CreateUserInviteEvent, UserInviteEvents } from './events';
 
@@ -23,6 +24,8 @@ export class UserInviteService {
   constructor(
     @InjectRepository(UserInvite)
     private readonly userInviteRepository: Repository<UserInvite>,
+    @InjectRepository(UserJoinRequest)
+    private readonly userJoinRequestRepository: Repository<UserJoinRequest>,
     private readonly cryptoService: CryptoService,
     private readonly contextService: ContextService,
     private readonly mailService: MailService,
@@ -214,7 +217,17 @@ export class UserInviteService {
       throw new BadRequestException(TeamError.INVITE_CREATION_FAILED);
     }
 
-    await this.userTeamService.addUserToTeam(user.id, invite?.team?.id);
+    if (type === InviteType.PRIVATE) {
+      await this.userTeamService.addUserToTeam(user.id, invite?.team?.id);
+    } else {
+      // for public invite, create a join request with PENDING status
+      const joinRequest = this.userJoinRequestRepository.create({
+        user: { id: user.id },
+        team: { id: this.contextService.getData('tenantId') },
+        invite: { id: invite.id },
+      });
+      await this.userJoinRequestRepository.save(joinRequest);
+    }
 
     return true;
   }

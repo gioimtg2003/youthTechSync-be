@@ -6,13 +6,14 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AbilityModule } from 'src/ability';
 import { UserInvite } from '../entities/user-invite.entity';
+import { UserJoinRequest } from '../entities/user-join-request.entity';
 import { UserTeamModule } from '../user-team';
 import { UserInviteController } from './user-invite.controller';
 import { UserInviteService } from './user-invite.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserInvite]),
+    TypeOrmModule.forFeature([UserInvite, UserJoinRequest]),
     CryptoModule,
     MailModule,
     ContextModule,

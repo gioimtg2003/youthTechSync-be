@@ -30,7 +30,7 @@ export class UserInviteController {
     return this.userInviteService.getInvites();
   }
 
-  @Post('create-invite')
+  @Post('/')
   @RequirePolicies((ability) =>
     ability.can(ActionPermission.create, SYSTEM_RESOURCE['user-invite']),
   )
@@ -65,7 +65,7 @@ export class UserInviteController {
     );
   }
 
-  @Post('generate-invite-public-url/:inviteToken')
+  @Post('use-invite-public-url/:inviteToken')
   @UseGuards(UseInvitePublicGuard)
   useInviteTokenPublic(
     @Param('inviteToken') inviteToken: string,
