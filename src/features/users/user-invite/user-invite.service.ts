@@ -4,6 +4,7 @@ import {
   InviteType,
   TeamError,
   USER_INVITE_TOKEN_EXPIRATION,
+  UserJoinRequestStatus,
 } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { TeamService } from '@features/teams';
@@ -206,7 +207,6 @@ export class UserInviteService {
       throw new BadRequestException(TeamError.INVITE_TOKEN_NOT_FOUND);
     }
 
-    //TODO: add logic to handle invite user public share url to prevent leaked links
     const updated = await this.userInviteRepository.update(
       { id: invite.id },
       { usedAt: new Date() },
@@ -279,6 +279,51 @@ export class UserInviteService {
       url: `${process.env.FRONTEND_URL}/invited/${invite.uid}?inviter=${userIdInvite}&time=${dateNow}&signature=${hash}`,
       invite,
     };
+  }
+
+  async actionUserJoinRequest(
+    actionUserId: number,
+    joinRequestId: number,
+    approve: boolean,
+  ) {
+    const joinRequest = await this.userJoinRequestRepository.findOne({
+      where: { id: joinRequestId },
+      relations: ['user', 'team'],
+      select: {
+        id: true,
+        status: true,
+        user: { id: true },
+        team: { id: true },
+      },
+    });
+
+    if (!joinRequest) {
+      this.logger.error(`Join request ${joinRequestId} not found`);
+      throw new BadRequestException(TeamError.JOIN_REQUEST_NOT_FOUND);
+    }
+
+    if (joinRequest.status !== UserJoinRequestStatus.PENDING) {
+      this.logger.error(`Join request ${joinRequestId} already handled`);
+      throw new BadRequestException(TeamError.JOIN_REQUEST_ALREADY_HANDLED);
+    }
+
+    if (approve) {
+      await this.userTeamService.addUserToTeam(
+        joinRequest.user.id,
+        joinRequest.team.id,
+      );
+
+      await this.userJoinRequestRepository.update(joinRequest, {
+        status: UserJoinRequestStatus.APPROVED,
+        actionBy: { id: actionUserId },
+      });
+    } else {
+      await this.userJoinRequestRepository.update(joinRequest, {
+        status: UserJoinRequestStatus.REJECTED,
+        actionBy: { id: actionUserId },
+      });
+    }
+    return true;
   }
 
   @OnEvent(UserInviteEvents.CREATE_USER_INVITE)

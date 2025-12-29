@@ -8,7 +8,15 @@ import {
 import { CurrentUser, HeaderTeamAlias, RequirePolicies } from '@decorators';
 import { UserAuthGuard } from '@features/user-auth/guards';
 import { IUserSession } from '@interfaces';
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { SendInviteDto } from './dto';
 import { UseInvitePublicGuard } from './guards';
 import { UserInviteService } from './user-invite.service';
@@ -53,7 +61,7 @@ export class UserInviteController {
     return this.userInviteService.resendInvite(inviteToken);
   }
 
-  @Post('use-invite/:inviteToken')
+  @Patch('use-invite/:inviteToken')
   useInvite(
     @Param('inviteToken') inviteToken: string,
     @CurrentUser() user: IUserSession,
@@ -65,7 +73,7 @@ export class UserInviteController {
     );
   }
 
-  @Post('use-invite-public-url/:inviteToken')
+  @Patch('use-invite-public-url/:inviteToken')
   @UseGuards(UseInvitePublicGuard)
   useInviteTokenPublic(
     @Param('inviteToken') inviteToken: string,
@@ -84,5 +92,21 @@ export class UserInviteController {
   )
   generatePublicInvite(@CurrentUser() user: IUserSession) {
     return this.userInviteService.generateInvitePublicUrl(user.id);
+  }
+
+  @Patch('action-join-request/:joinRequestId')
+  @RequirePolicies((ability) =>
+    ability.can(ActionPermission.update, SYSTEM_RESOURCE['user-invite']),
+  )
+  actionJoinRequest(
+    @Param('joinRequestId') joinRequestId: number,
+    @Body('approve') approve: boolean,
+    @CurrentUser() user: IUserSession,
+  ) {
+    return this.userInviteService.actionUserJoinRequest(
+      user.id,
+      joinRequestId,
+      approve,
+    );
   }
 }
