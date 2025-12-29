@@ -281,6 +281,23 @@ export class UserInviteService {
     };
   }
 
+  async findAllJoinRequests() {
+    const teamId = this.contextService.getData('tenantId');
+
+    return this.userJoinRequestRepository.find({
+      where: { team: { id: teamId } },
+      relations: ['user', 'team', 'invite'],
+      select: {
+        id: true,
+        status: true,
+        createdAt: true,
+        user: { id: true, email: true },
+        team: { id: true, name: true },
+        invite: { id: true, uid: true },
+      },
+    });
+  }
+
   async actionUserJoinRequest(
     actionUserId: number,
     joinRequestId: number,

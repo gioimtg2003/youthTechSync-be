@@ -109,4 +109,9 @@ export class UserInviteController {
       approve,
     );
   }
+
+  @Get('join-requests')
+  getJoinRequests() {
+    return this.userInviteService.findAllJoinRequests();
+  }
 }
