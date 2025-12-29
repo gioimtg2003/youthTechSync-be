@@ -6,6 +6,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserInvite } from '../entities/user-invite.entity';
+import { UserJoinRequest } from '../entities/user-join-request.entity';
 import { UserTeamService } from '../user-team';
 import { UserInviteService } from './user-invite.service';
 
@@ -26,6 +27,10 @@ describe('UserInviteService', () => {
         UserInviteService,
         {
           provide: getRepositoryToken(UserInvite),
+          useValue: mockUserInviteRepository,
+        },
+        {
+          provide: getRepositoryToken(UserJoinRequest),
           useValue: mockUserInviteRepository,
         },
         { provide: CryptoService, useValue: mockSimpleProvider },
