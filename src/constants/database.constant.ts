@@ -60,6 +60,7 @@ export enum SYSTEM_RESOURCE {
   settings = 'settings',
   permission = 'permission',
   audit = 'audit',
+  'user-invite' = 'user-invite',
 }
 
 export const SYSTEM_RESOURCE_AVAILABLE_FOR_PERMISSION = Object.values(

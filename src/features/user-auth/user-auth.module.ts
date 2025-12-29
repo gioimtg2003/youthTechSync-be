@@ -1,7 +1,7 @@
 import { ContextModule } from '@common/modules/context';
 import { CryptoModule } from '@features/crypto';
 import { AuthSerializer } from '@features/passport';
-import { UserModule } from '@features/users';
+import { UserInviteModule, UserModule } from '@features/users';
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { UserLocalStrategy } from './strategies';
@@ -14,6 +14,7 @@ import { UserAuthService } from './user-auth.service';
     CryptoModule,
     PassportModule.register({ session: true }),
     ContextModule,
+    UserInviteModule,
   ],
   controllers: [UserAuthController],
   providers: [UserAuthService, AuthSerializer, UserLocalStrategy],

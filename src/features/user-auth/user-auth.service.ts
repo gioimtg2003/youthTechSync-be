@@ -1,9 +1,10 @@
 import { UserError } from '@constants';
 import { CryptoService } from '@features/crypto';
-import { UserService } from '@features/users';
+import { UserInviteService, UserService } from '@features/users';
 import { User } from '@features/users/entities/user.entity';
 import { IUserSession } from '@interfaces';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { UserRegisterDto } from './dto';
 
 @Injectable()
 export class UserAuthService {
@@ -12,9 +13,10 @@ export class UserAuthService {
   constructor(
     private readonly userService: UserService,
     private readonly cryptoService: CryptoService,
+    private readonly userInviteService: UserInviteService,
   ) {}
 
-  async register(userData: Partial<User>) {
+  async register(userData: UserRegisterDto) {
     const { password, email } = userData;
 
     const found = await this.userService.findByUsernameOrEmail(email, ['id']);
@@ -28,6 +30,12 @@ export class UserAuthService {
 
     if (!user) {
       throw new BadRequestException(UserError.USER_CANNOT_CREATE);
+    }
+
+    const inviteToken = userData?.inviteToken;
+
+    if (inviteToken) {
+      await this.userInviteService.useInvite(user?.id, inviteToken);
     }
 
     return true;

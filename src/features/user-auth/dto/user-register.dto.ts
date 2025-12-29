@@ -1,6 +1,12 @@
 import { EmailRegex } from '@constants';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class UserRegisterDto {
   @ApiProperty({ example: 'user1' })
@@ -25,4 +31,12 @@ export class UserRegisterDto {
     message: 'Password must be at most 100 characters long',
   })
   password: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4OTAyODQwMH0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+  })
+  inviteToken?: string;
 }

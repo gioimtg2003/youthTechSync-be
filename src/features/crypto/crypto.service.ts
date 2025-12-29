@@ -12,8 +12,8 @@ export class CryptoService {
 
   private readonly SALT_ROUNDS = Number(process.env.SALT_ROUNDS);
 
-  generateToken() {
-    return crypto.randomBytes(this.IV_LENGTH).toString(this.ENCODING);
+  generateToken(length?: number) {
+    return crypto.randomBytes(length || this.IV_LENGTH).toString(this.ENCODING);
   }
 
   encrypt(text: string, key?: string): string {

@@ -1,4 +1,5 @@
 export const SESSION_MAX_AGE = 1000 * 60 * 60 * 24; // 48 hours
+export const USER_INVITE_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7 days
 
 /**
  * Change log:

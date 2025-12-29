@@ -22,6 +22,7 @@ import {
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
 import { join } from 'path';
@@ -29,7 +30,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Environment } from './config';
 import { ContextMiddleware, RequestMiddleware } from './middleware';
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -71,6 +71,7 @@ import { ContextMiddleware, RequestMiddleware } from './middleware';
         },
       },
     }),
+    EventEmitterModule.forRoot(),
     RedisModule,
     ResourceModule,
     RoleModule,

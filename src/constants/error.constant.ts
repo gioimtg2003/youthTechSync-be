@@ -16,6 +16,11 @@ export enum UserError {
 
 export enum TeamError {
   TEAM_NOT_FOUND = 200,
+  INVITE_TOKEN_NOT_FOUND = 201,
+  INVITE_TOKEN_EXPIRED = 202,
+  INVITE_TOKEN_ALREADY_USED = 203,
+  INVITE_CREATION_FAILED = 204,
+  INVITE_CANNOT_RESEND = 205,
 }
 
 /** *****************End***************** */

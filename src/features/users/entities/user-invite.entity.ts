@@ -25,6 +25,6 @@ export class UserInvite extends BaseEntity {
   @ManyToOne(() => Team, { nullable: false })
   team: Relation<Team>;
 
-  @Column({ type: 'timestamp with time zone', nullable: true })
+  @Column({ type: 'timestamptz', nullable: true })
   usedAt?: Date;
 }
