@@ -7,6 +7,7 @@ import {
 } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { TeamService } from '@features/teams';
+import { IUserSession } from '@interfaces';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -186,8 +187,14 @@ export class UserInviteService {
    * Mark invite as used with usedAt timestamp
    * @param uid
    */
-  async useInvite(userId: number, uid: string, type: InviteType) {
+  async useInvite(user: IUserSession, uid: string, type: InviteType) {
     const invite = await this.getInviteByUid(uid);
+    if (invite.email !== user.email) {
+      this.logger.error(
+        `Invite email ${invite.email} does not match user email ${user.email}`,
+      );
+      throw new BadRequestException(TeamError.INVITE_EMAIL_MISMATCH);
+    }
 
     if (invite.type !== type) {
       this.logger.error(
@@ -206,7 +213,7 @@ export class UserInviteService {
       throw new BadRequestException(TeamError.INVITE_CREATION_FAILED);
     }
 
-    await this.userTeamService.addUserToTeam(userId, invite?.team?.id);
+    await this.userTeamService.addUserToTeam(user.id, invite?.team?.id);
 
     return true;
   }

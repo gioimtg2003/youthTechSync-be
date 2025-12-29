@@ -21,6 +21,7 @@ export enum TeamError {
   INVITE_TOKEN_ALREADY_USED = 203,
   INVITE_CREATION_FAILED = 204,
   INVITE_CANNOT_RESEND = 205,
+  INVITE_EMAIL_MISMATCH = 206,
 }
 
 /** *****************End***************** */

@@ -37,7 +37,7 @@ export class UserAuthService {
     if (inviteToken) {
       //TODO: handle invite type
       await this.userInviteService.useInvite(
-        user?.id,
+        this.createUserSession(user),
         inviteToken,
         InviteType.PRIVATE,
       );
@@ -47,6 +47,7 @@ export class UserAuthService {
   }
 
   async validate(email: string, password: string) {
+    //TODO: improve select fields to only necessary ones
     const user = await this.userService.findByUsernameOrEmail(
       email,
       [],

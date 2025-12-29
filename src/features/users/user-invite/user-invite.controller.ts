@@ -59,7 +59,7 @@ export class UserInviteController {
     @CurrentUser() user: IUserSession,
   ) {
     return this.userInviteService.useInvite(
-      user.id,
+      user,
       inviteToken,
       InviteType.PRIVATE,
     );
@@ -72,7 +72,7 @@ export class UserInviteController {
     @CurrentUser() user: IUserSession,
   ) {
     return this.userInviteService.useInvite(
-      user.id,
+      user,
       inviteToken,
       InviteType.PUBLIC,
     );
