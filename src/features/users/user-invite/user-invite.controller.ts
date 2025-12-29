@@ -73,7 +73,7 @@ export class UserInviteController {
     );
   }
 
-  @Patch('use-invite-public-url/:inviteToken')
+  @Patch('public-invite/use-invite/:inviteToken')
   @UseGuards(UseInvitePublicGuard)
   useInviteTokenPublic(
     @Param('inviteToken') inviteToken: string,
@@ -86,7 +86,7 @@ export class UserInviteController {
     );
   }
 
-  @Get('generate-public-invite')
+  @Get('public-invite/generate')
   @RequirePolicies((ability) =>
     ability.can(ActionPermission.create, SYSTEM_RESOURCE['user-invite']),
   )
@@ -94,7 +94,7 @@ export class UserInviteController {
     return this.userInviteService.generateInvitePublicUrl(user.id);
   }
 
-  @Patch('action-join-request/:joinRequestId')
+  @Patch('public-invite-request/:joinRequestId')
   @RequirePolicies((ability) =>
     ability.can(ActionPermission.update, SYSTEM_RESOURCE['user-invite']),
   )
