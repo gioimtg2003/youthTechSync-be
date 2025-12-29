@@ -105,6 +105,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
+    "modulePaths": [
+      "<rootDir>"
+    ],
     "moduleNameMapper": {
       "^@common/(.*)$": "<rootDir>/common/$1",
       "^@features/(.*)$": "<rootDir>/features/$1",
@@ -112,7 +115,8 @@
       "^@interfaces$": "<rootDir>/interfaces",
       "^@constants$": "<rootDir>/constants",
       "^@utils$": "<rootDir>/utils",
-      "^@libs/(.*)$": "<rootDir>/libs/$1"
+      "^@libs/(.*)$": "<rootDir>/libs/$1",
+      "^src/(.*)$": "<rootDir>/$1"
     }
   },
   "packageManager": "pnpm@9.7.1"
