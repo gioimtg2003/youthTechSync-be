@@ -1,4 +1,4 @@
-import { UserError } from '@constants';
+import { InviteType, UserError } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { UserInviteService, UserService } from '@features/users';
 import { User } from '@features/users/entities/user.entity';
@@ -35,7 +35,12 @@ export class UserAuthService {
     const inviteToken = userData?.inviteToken;
 
     if (inviteToken) {
-      await this.userInviteService.useInvite(user?.id, inviteToken);
+      //TODO: handle invite type
+      await this.userInviteService.useInvite(
+        user?.id,
+        inviteToken,
+        InviteType.PRIVATE,
+      );
     }
 
     return true;
