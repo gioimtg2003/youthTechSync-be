@@ -1,0 +1,27 @@
+import { MailModule } from '@common/modules';
+import { ContextModule } from '@common/modules/context';
+import { CryptoModule } from '@features/crypto';
+import { TeamModule } from '@features/teams';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AbilityModule } from 'src/ability';
+import { UserInvite } from '../entities/user-invite.entity';
+import { UserTeamModule } from '../user-team';
+import { UserInviteController } from './user-invite.controller';
+import { UserInviteService } from './user-invite.service';
+
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([UserInvite]),
+    CryptoModule,
+    MailModule,
+    ContextModule,
+    TeamModule,
+    UserTeamModule,
+    AbilityModule,
+  ],
+  providers: [UserInviteService],
+  exports: [UserInviteService],
+  controllers: [UserInviteController],
+})
+export class UserInviteModule {}

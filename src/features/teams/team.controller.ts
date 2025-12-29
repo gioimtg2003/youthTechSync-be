@@ -3,6 +3,7 @@ import { ActionPermission, SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
 import { CurrentUser, RequirePolicies } from '@decorators';
 
 import { LocatorResourceGuard } from '@features/locator-resource';
+import { UserAuthGuard } from '@features/user-auth/guards';
 import { IUserSession } from '@interfaces';
 import {
   Body,
@@ -68,5 +69,19 @@ export class TeamController {
   @ApiOkResponse({ description: 'Team updated successfully', type: Boolean })
   update(@Param('id') id: number, @CurrentUser() user: IUserSession) {
     return user;
+  }
+
+  @UseGuards(UserAuthGuard, PermissionGuard)
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.manage, SYSTEM_RESOURCE.team);
+  })
+  @Post('public-access')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: 'Team made public access successfully',
+    type: Boolean,
+  })
+  makePublicAccess() {
+    return this.teamService.makePublicAccess();
   }
 }

@@ -117,7 +117,7 @@ export class UserTeamService {
   /**
    * Add user to team with max team join based on plan of user
    */
-  async addUserToTeam(userId: number) {
+  async addUserToTeam(userId: number, teamId?: number) {
     this.logger.log(
       `Adding user ${userId} to team ${this.contextService.getData('tenantId')}`,
     );
@@ -137,7 +137,8 @@ export class UserTeamService {
 
     if (
       !user?.teams?.find(
-        (team) => team.id === this.contextService.getData('tenantId'),
+        (team) =>
+          team.id === (teamId ?? this.contextService.getData('tenantId')),
       )
     )
       throw new ForbiddenException(UserError.USER_CANNOT_JOIN_TEAM);
@@ -154,7 +155,7 @@ export class UserTeamService {
       ...user,
       teams: [
         ...(user.teams ?? []),
-        { id: this.contextService.getData('tenantId') },
+        { id: teamId ?? this.contextService.getData('tenantId') },
       ],
     });
 

@@ -1,3 +1,4 @@
+import { ContextService } from '@common/modules/context';
 import { LIMIT_PLAN_CREATE_TEAM, TeamError, UserError } from '@constants';
 import { User } from '@features/users/entities/user.entity';
 import {
@@ -18,6 +19,7 @@ export class TeamService {
   constructor(
     @InjectRepository(Team) private readonly teamRepository: Repository<Team>,
     private readonly dataSource: DataSource,
+    private readonly contextService: ContextService,
   ) {}
 
   async findById(
@@ -116,5 +118,13 @@ export class TeamService {
       select: ['id', 'name', 'alias', 'logoUrl', 'settings'],
     });
     return teams;
+  }
+
+  async makePublicAccess() {
+    const workspaceId = this.contextService.getData('tenantId');
+
+    await this.update(workspaceId, { isAutoAcceptMember: true });
+
+    return true;
   }
 }

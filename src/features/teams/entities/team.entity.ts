@@ -33,6 +33,9 @@ export class Team extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   logoUrl?: string;
 
+  @Column({ type: 'boolean', default: false })
+  isAutoAcceptMember?: boolean;
+
   @Column({ type: 'jsonb', nullable: true })
   settings?: Record<string, any>;
 

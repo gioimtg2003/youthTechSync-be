@@ -1,4 +1,5 @@
 export const SESSION_MAX_AGE = 1000 * 60 * 60 * 24; // 48 hours
+export const USER_INVITE_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7 days
 
 /**
  * Change log:
@@ -16,3 +17,10 @@ export const DEFAULT_ID = -1;
 export const SEPARATOR_POLICY = '::';
 
 export const HEADER_TEAM_ID = 'x-team-id';
+
+export const USER_EMAIL = {
+  NO_REPLY: 'no-reply',
+  SUPPORT: 'support',
+  SYSTEM: 'system',
+  ADMIN: 'admin',
+};
