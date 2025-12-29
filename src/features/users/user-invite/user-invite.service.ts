@@ -203,6 +203,7 @@ export class UserInviteService {
       throw new BadRequestException(TeamError.INVITE_TOKEN_NOT_FOUND);
     }
 
+    //TODO: add logic to handle invite user public share url to prevent leaked links
     const updated = await this.userInviteRepository.update(
       { id: invite.id },
       { usedAt: new Date() },

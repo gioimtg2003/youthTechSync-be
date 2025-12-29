@@ -11,6 +11,7 @@ export const DATABASE_TABLES = {
   CONTENT: 'contents',
   CONTENT_AUDITS: 'content_audits',
   USER_INVITES: 'user_invites',
+  USER_JOIN_REQUESTS: 'user_join_requests',
 };
 
 export enum UserPlan {
