@@ -16,6 +16,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { PolicyIds } from 'src/decorators/policy-ids.decorator';
 import {
   AddUserToTeamDto,
   CreateUserToTeamDto,
@@ -41,6 +42,16 @@ export class UserTeamController {
   })
   getTeams(@CurrentUser() user: IUserSession) {
     return this.userTeamService.getMyTeams(user?.id);
+  }
+
+  @Get('users')
+  @HttpCode(HttpStatus.OK)
+  @ApiCreatedResponse({
+    description: 'User teams retrieved successfully',
+    type: Boolean,
+  })
+  getTeamUsers(@PolicyIds(SYSTEM_RESOURCE['user']) resourceIds: number[]) {
+    return this.userTeamService.getAllUsersInTeam(resourceIds);
   }
 
   @UseGuards(PermissionGuard)

@@ -31,13 +31,27 @@ export class UserTeamService {
           id: In(ids),
           teams: { id: this.contextService.getData('tenantId') },
         },
-        select: ['id', 'email'],
+        select: {
+          id: true,
+          email: true,
+          createdAt: true,
+          teams: { name: true },
+          roles: { name: true },
+        },
+        relations: ['teams', 'roles'],
       });
     }
 
     const users = await this.userRepository.find({
       where: { teams: { id: this.contextService.getData('tenantId') } },
-      select: ['id', 'email'],
+      select: {
+        id: true,
+        email: true,
+        createdAt: true,
+        teams: { name: true },
+        roles: { name: true },
+      },
+      relations: ['teams', 'roles'],
     });
 
     return users;
