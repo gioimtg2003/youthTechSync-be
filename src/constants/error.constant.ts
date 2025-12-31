@@ -24,6 +24,7 @@ export enum TeamError {
   INVITE_EMAIL_MISMATCH = 206,
   JOIN_REQUEST_NOT_FOUND = 207,
   JOIN_REQUEST_ALREADY_HANDLED = 208,
+  INVITE_NOT_FOUND = 209,
 }
 
 /** *****************End***************** */

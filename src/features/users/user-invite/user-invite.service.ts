@@ -61,13 +61,18 @@ export class UserInviteService {
   }
 
   async delete(inviteId: number) {
-    const deleted = await this.userInviteRepository.delete({
-      id: inviteId,
-      type: InviteType.PRIVATE,
-      usedAt: null,
+    const found = await this.userInviteRepository.findOne({
+      where: { id: inviteId, type: InviteType.PRIVATE, usedAt: null },
     });
 
-    return deleted.affected > 0;
+    if (!found) {
+      this.logger.error(`Invite ${inviteId} not found or already used`);
+      throw new BadRequestException(TeamError.INVITE_NOT_FOUND);
+    }
+
+    await this.userInviteRepository.remove(found);
+
+    return true;
   }
 
   async getInvites() {
