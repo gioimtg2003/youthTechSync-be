@@ -94,7 +94,7 @@ export class UserInviteService {
   async createInvite(
     userId: number,
     type: InviteType = InviteType.PRIVATE,
-    email?: string,
+    email?: string | string[],
   ) {
     const team = await this.teamService.findById(
       this.contextService.getData('tenantId'),
@@ -108,15 +108,26 @@ export class UserInviteService {
 
       throw new BadRequestException(TeamError.TEAM_NOT_FOUND);
     }
-    const invite = await this.create(userId, { email, type, team });
+    const invites = await Promise.all(
+      (Array.isArray(email) ? email : [email]).map((email) =>
+        this.create(userId, { email, type, team }),
+      ),
+    );
 
-    const url = `${process.env.FRONTEND_URL}/invited/${invite.uid}`;
+    invites.forEach((invite) => {
+      const url = `${process.env.FRONTEND_URL}/invited/${invite.uid}`;
 
-    if (invite.type === InviteType.PRIVATE)
-      this.eventEmitter.emit(
-        UserInviteEvents.CREATE_USER_INVITE,
-        new CreateUserInviteEvent(team.name, url, email, team.createdAt),
-      );
+      if (invite.type === InviteType.PRIVATE)
+        this.eventEmitter.emit(
+          UserInviteEvents.CREATE_USER_INVITE,
+          new CreateUserInviteEvent(
+            team.name,
+            url,
+            invite?.email,
+            team.createdAt,
+          ),
+        );
+    });
 
     return team;
   }

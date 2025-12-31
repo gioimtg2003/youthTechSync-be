@@ -1,7 +1,18 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  ValidateIf,
+} from 'class-validator';
 
 export class SendInviteDto {
+  @IsNotEmpty({ message: 'Email is required' })
+  @ValidateIf((_, value) => typeof value === 'string')
   @IsEmail({}, { message: 'Invalid email address' })
-  @IsNotEmpty({ message: 'Email address is required' })
-  email: string;
+  @ValidateIf((_, value) => Array.isArray(value))
+  @IsArray({ message: 'Email must be an array' })
+  @ArrayNotEmpty({ message: 'Email array must not be empty' })
+  @IsEmail({}, { each: true, message: 'Invalid email in array' })
+  email: string | string[];
 }
