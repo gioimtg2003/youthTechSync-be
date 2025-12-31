@@ -14,6 +14,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -58,7 +59,7 @@ export class UserInviteController {
   @RequirePolicies((ability) =>
     ability.can(ActionPermission.delete, SYSTEM_RESOURCE['user-invite']),
   )
-  deleteInvite(@Param('inviteId') inviteId: number) {
+  deleteInvite(@Param('inviteId', ParseIntPipe) inviteId: number) {
     return this.userInviteService.delete(inviteId);
   }
 
@@ -66,8 +67,8 @@ export class UserInviteController {
   @RequirePolicies((ability) =>
     ability.can(ActionPermission.create, SYSTEM_RESOURCE['user-invite']),
   )
-  resendInvite(@Param('inviteId') inviteToken: string) {
-    return this.userInviteService.resendInvite(inviteToken);
+  resendInvite(@Param('inviteId', ParseIntPipe) inviteId: number) {
+    return this.userInviteService.resendInvite(inviteId);
   }
 
   @Patch('use-invite/:inviteToken')

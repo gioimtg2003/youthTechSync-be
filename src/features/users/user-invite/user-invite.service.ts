@@ -116,9 +116,9 @@ export class UserInviteService {
     return team;
   }
 
-  async resendInvite(inviteToken: string) {
+  async resendInvite(inviteId: number) {
     const invite = await this.userInviteRepository.findOne({
-      where: { uid: inviteToken },
+      where: { id: inviteId },
       relations: ['team'],
       select: {
         id: true,
@@ -130,13 +130,13 @@ export class UserInviteService {
     });
 
     if (!invite) {
-      this.logger.error(`Invite ${inviteToken} not found`);
+      this.logger.error(`Invite ${inviteId} not found`);
       throw new BadRequestException(TeamError.INVITE_TOKEN_NOT_FOUND);
     }
 
     if (invite.type !== InviteType.PRIVATE) {
       this.logger.error(
-        `Invite ${inviteToken} is not of type PRIVATE, cannot resend`,
+        `Invite ${inviteId} is not of type PRIVATE, cannot resend`,
       );
       throw new BadRequestException(TeamError.INVITE_CANNOT_RESEND);
     }
