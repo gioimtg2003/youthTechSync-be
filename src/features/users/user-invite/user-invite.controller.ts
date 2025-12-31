@@ -11,6 +11,7 @@ import { IUserSession } from '@interfaces';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -51,6 +52,14 @@ export class UserInviteController {
       InviteType.PRIVATE,
       sendInviteDto?.email ?? '',
     );
+  }
+
+  @Delete('/:inviteId')
+  @RequirePolicies((ability) =>
+    ability.can(ActionPermission.delete, SYSTEM_RESOURCE['user-invite']),
+  )
+  deleteInvite(@Param('inviteId') inviteId: number) {
+    return this.userInviteService.delete(inviteId);
   }
 
   @Post('resend-invite/:inviteId')

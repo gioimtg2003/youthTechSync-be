@@ -60,6 +60,16 @@ export class UserInviteService {
     return saved;
   }
 
+  async delete(inviteId: number) {
+    const deleted = await this.userInviteRepository.delete({
+      id: inviteId,
+      type: InviteType.PRIVATE,
+      usedAt: null,
+    });
+
+    return deleted.affected > 0;
+  }
+
   async getInvites() {
     const teamId = this.contextService.getData('tenantId');
     return this.userInviteRepository.find({

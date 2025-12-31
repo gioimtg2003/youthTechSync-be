@@ -48,8 +48,8 @@ export class UserTeamService {
         id: true,
         email: true,
         createdAt: true,
-        teams: { name: true, id:true },
-        roles: { name: true , id: true },
+        teams: { name: true, id: true },
+        roles: { name: true, id: true },
       },
       relations: ['teams', 'roles'],
     });
